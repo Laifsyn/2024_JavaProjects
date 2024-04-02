@@ -1,9 +1,4 @@
-/*----------------------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Licensed under the MIT License. See LICENSE in the project root for license information.
- *---------------------------------------------------------------------------------------*/
-
-package com.mycompany.app;
+package com.utp.pry1.app;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -17,10 +12,9 @@ public class App {
         String input;
         while (true) {
 
-
             // Reading data using readLine
             try {
-                System.out.println("Ingrese numero o `exit` para salir:");
+                System.out.print("Ingrese numero o `exit` para salir: ");
                 input = reader.readLine().trim();
             } catch (Exception e) {
                 System.out.println("Entrada invalida: " + e);
@@ -30,64 +24,41 @@ public class App {
                 System.out.println("Saliendo...");
                 break;
             }
-            if (input.equals("clear")) {
-                System.out.println("\033[H\033[2J");
+            // Sanitize input
+            if (input.isBlank()) {
+                System.out.println("Número inválido `" + input + "` no puede estar vacío");
                 continue;
             }
+            if (input.contains(".")) {
+                System.out.println("Número inválido `" + input + "` no puede contener decimales");
+                continue;
+            }
+            if (input.startsWith("0") || input.startsWith("-")) {
+                System.out.println("Número inválido `" + input + "` no puede empezar con `0` o `-`");
+                continue;
+            }
+            int num = 0;
+            try {
+                num = Integer.parseInt(input);
+            } catch (Exception e) {
+                System.out.println("Número inválido `" + input + "` no es convertible a un número entero");
+                continue;
+            }
+            if (!(num < 1_000_000_000)) {
+                System.out.println("Número inválido `" + input + "` no puede ser mayor a 1_000_000_000");
+                continue;
+            }
+            // Process input after sanitization
+            System.out.print("Entrada: ");
+            Utils.pretty_print_int(num);
+            System.out.println(" => " + Int2Words.to_cardinal(num));
         }
-
-        // loop {
-        
-        // match input {
-        // "exit" => {
-        // clear_terminal();
-        // println!("Saliendo...");
-        // break;
-        // }
-        // "clear" => {
-        // clear_terminal();
-        // continue;
-        // }
-        // _ => {}
-        // }
-        // if input.is_empty() {
-        // println!("Número inválido {input:?} no puede estar vacío");
-        // continue;
-        // }
-        // if input.starts_with(['0', '-']) && input.len() > 1 {
-        // println!("Número inválido {input:?} no puede empezar con `0` o `-`");
-        // continue;
-        // }
-        // let num = match input.parse::<i128>() {
-        // Ok(num) => num,
-        // Err(_) => {
-        // println!("Número inválido {input:?} - no es convertible a un número entero");
-        // continue;
-        // }
-        // };
-        // if let true = num >= 1_000_000_000 {
-        // println!("Número inválido {input:?} - Tiene que ser menor que
-        // 1_000_000_000");
-        // continue;
-        // }
-        // print!("Entrada:");
-        // pretty_print_int(num);
-        // println!(" => {:?}", es.to_cardinal(num).unwrap());
-        // }
-
     }
 
     public static void main(String[] args) {
         System.out.println("Hello World!");
         App app = new App();
-
         app.spawn_cli();
-        var palabra = Int2Words.to_cardinal(1_001_020_642);
-        System.out.println("Goodbye World!: " + palabra);
-        System.out.println("=" + Int2Words.to_cardinal(2_001_020_642));
-        System.out.println("=" + Int2Words.to_cardinal(2_002_020_642));
-        System.out.println("=" + Int2Words.to_cardinal(2_020_021_642));
-        System.out.println("=" + Int2Words.to_cardinal(2_000_020_642));
     }
 }
 
@@ -142,7 +113,7 @@ class Int2Words {
                         words.add(String.format("%s y %s", ten, unit_word));
                     }
                 }
-                if (i != 0 && triplet != 0) {
+                if (i != 0) {
                     if (i > MILES.length - 1) {
                         return String.format("Número demasiado grande: %d - Maximo: %d", num, Integer.MAX_VALUE);
                     }
@@ -160,16 +131,16 @@ class Int2Words {
         return String.join(" ", words);
     }
 
-    static final String[] UNIDADES = { "", "uno", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve" };
-    static final String[] DIECIS = { "diez", "once", "doce", "trece", "catorce", "quince", "dieciséis", "diecisiete",
-            "dieciocho", "diecinueve" };
-    static final String[] DECENAS = { "", "", "veinte", "treinta", "cuarenta", "cincuenta", "sesenta", "setenta",
-            "ochenta", "noventa" };
-    static final String[] CENTIS = { "", "ciento", "doscientos", "trescientos", "cuatrocientos", "quinientos",
+    static final String[] UNIDADES = {"", "uno", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve"};
+    static final String[] DIECIS = {"diez", "once", "doce", "trece", "catorce", "quince", "dieciséis", "diecisiete",
+            "dieciocho", "diecinueve"};
+    static final String[] DECENAS = {"", "", "veinte", "treinta", "cuarenta", "cincuenta", "sesenta", "setenta",
+            "ochenta", "noventa"};
+    static final String[] CENTIS = {"", "ciento", "doscientos", "trescientos", "cuatrocientos", "quinientos",
             "seiscientos",
-            "setecientos", "ochocientos", "novecientos" };
-    static final String[] MILES = { "", "mil", "millones", "billones" };
-    static final String[] MIL = { "", "mil", "millón", "billón" };
+            "setecientos", "ochocientos", "novecientos"};
+    static final String[] MILES = {"", "mil", "millones", "billones"};
+    static final String[] MIL = {"", "mil", "millón", "billón"};
 }
 
 class Utils {
@@ -188,7 +159,11 @@ class Utils {
     static public void pretty_print_int(Integer num) {
         var triplets = Utils.into_triplets(num);
         for (int i = 0; i < triplets.length; i++) {
-            System.out.print(triplets[i]);
+            if (i == 0) {
+                System.out.print(triplets[i]);
+            } else {
+                System.out.printf("%03d", triplets[i]);
+            }
             if (i < triplets.length - 1) {
                 System.out.print(",");
             }

@@ -1,4 +1,4 @@
-package com.mycompany.app;
+package com.utp.pry1.app;
 
 import org.junit.Test;
 
