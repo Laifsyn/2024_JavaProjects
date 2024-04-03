@@ -5,7 +5,6 @@ import java.util.Collections;
 
 public class Utils {
     static public Integer[] into_triplets(Integer num) {
-
         var vec = new ArrayList<Integer>();
         while (num > 0) {
             vec.add(num % 1000);

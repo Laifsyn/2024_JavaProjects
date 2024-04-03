@@ -58,5 +58,6 @@
         "UNIDADES",
         "vacío",
         "veinte"
-    ]
+    ],
+    "java.configuration.updateBuildConfiguration": "disabled"
 }

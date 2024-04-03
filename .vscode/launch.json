@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "RepNumericas",
+            "request": "launch",
+            "mainClass": "com.utp.pry2.app.RepNumericas",
+            "projectName": "my-app"
+        },
+        {
+            "type": "java",
             "name": "Launch App",
             "request": "launch",
             "cwd": "${workspaceFolder}",

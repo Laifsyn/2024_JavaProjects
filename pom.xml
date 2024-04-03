@@ -14,6 +14,11 @@
       <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+        <groupId>io.vavr</groupId>
+        <artifactId>vavr</artifactId>
+        <version>0.10.4</version> <!-- use the latest version here -->
+    </dependency>
   </dependencies>
   <properties>
     <jdk.version>11</jdk.version>
