@@ -1,4 +1,4 @@
-package com.utp;
+package com.utp.utils;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

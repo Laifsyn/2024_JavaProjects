@@ -17,7 +17,7 @@
     <dependency>
         <groupId>io.vavr</groupId>
         <artifactId>vavr</artifactId>
-        <version>0.10.4</version> <!-- use the latest version here -->
+        <version>0.10.4</version>
     </dependency>
   </dependencies>
   <properties>
