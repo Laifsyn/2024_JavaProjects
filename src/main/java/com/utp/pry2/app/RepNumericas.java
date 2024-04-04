@@ -25,10 +25,8 @@ public class RepNumericas {
             input = maybe_binario.get().toString();
             System.out.printf("Entrada: %s\n", input);
             System.out.println("Hexadecimal: 0x" + maybe_binario.get().to_hex_string());
-            var decimal = maybe_binario.get().to_int();
-            decimal = maybe_binario.get().to_int();
             System.out.printf("%s => Entero: ", input);
-            Utils.pretty_print_int(decimal);
+            Utils.pretty_print_int(maybe_binario.get().to_decimal());
             System.out.println("\n");
         }
     }
@@ -55,7 +53,7 @@ class BinaryString {
         return Validation.valid(new BinaryString(input));
     }
 
-    public Integer to_int() {
+    public Integer to_decimal() {
         if (cached_int.isPresent()) {
             return cached_int.get();
         }
@@ -64,7 +62,7 @@ class BinaryString {
     }
 
     public String to_hex_string() {
-        return Integer.toHexString(to_int());
+        return Integer.toHexString(to_decimal());
     }
 
     @Override
