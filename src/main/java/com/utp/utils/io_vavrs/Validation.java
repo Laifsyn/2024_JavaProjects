@@ -1,4 +1,4 @@
-package com.utp.io_vavrs;
+package com.utp.utils.io_vavrs;
 
 /*  __    __  __  __    __  ___
  * \  \  /  /    \  \  /  /  __/

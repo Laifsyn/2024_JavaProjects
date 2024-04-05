@@ -2,8 +2,8 @@ package com.utp.clsEstructuraDatos.pry2.app;
 
 import java.util.Optional;
 
-import com.utp.io_vavrs.Validation;
 import com.utp.utils.Cli;
+import com.utp.utils.io_vavrs.Validation;
 
 public class RepNumericas {
 
