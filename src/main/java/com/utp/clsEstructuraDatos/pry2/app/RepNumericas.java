@@ -1,4 +1,4 @@
-package com.utp.pry2.app;
+package com.utp.clsEstructuraDatos.pry2.app;
 
 import java.util.Optional;
 
@@ -34,7 +34,7 @@ public class RepNumericas {
 
 class Utils {
     static void pretty_print_int(int num) {
-        com.utp.pry1.app.Utils.pretty_print_int(num);
+        com.utp.clsEstructuraDatos.pry1.app.Utils.pretty_print_int(num);
     }
 }
 

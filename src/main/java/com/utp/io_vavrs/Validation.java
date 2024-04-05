@@ -21,7 +21,6 @@ package com.utp.io_vavrs;
  */
 
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
@@ -793,6 +792,7 @@ public interface Validation<E, T> extends  Serializable {
 
     }
 
+    @SuppressWarnings("unused")
     final class Builder8<E, T1, T2, T3, T4, T5, T6, T7, T8> {
 
         private Validation<E, T1> v1;
