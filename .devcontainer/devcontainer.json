@@ -4,7 +4,6 @@
 	"name": "Java",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
 	"image": "mcr.microsoft.com/devcontainers/java:21",
-
 	"features": {
 		"ghcr.io/devcontainers/features/java:1": {
 			"version": "none",
@@ -13,24 +12,27 @@
 			"installGradle": "false"
 		}
 	},
-
 	// Configure tool-specific properties.
 	"customizations": {
 		// Configure properties specific to VS Code.
 		"vscode": {
-			"settings": {},
+			"settings": {
+				"workbench.colorTheme": "One Dark Pro Mix",
+				"editor.formatOnSave": true
+			},
 			"extensions": [
-				"streetsidesoftware.code-spell-checker"
+				"formulahendry.code-runner",
+				"usernamehw.errorlens",
+				"ms-vsliveshare.vsliveshare",
+				"zhuangtongfa.material-theme",
+				"GitHub.copilot"
 			]
 		}
 	}
-
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
-
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "java -version",
-
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "root"
 }
