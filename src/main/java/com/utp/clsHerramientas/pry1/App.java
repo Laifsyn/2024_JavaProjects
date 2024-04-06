@@ -10,12 +10,11 @@ public class App {
         ListaDeNumeros lista = new ListaDeNumeros();
         Methods methods = new Methods();
         System.out.println("La media de los números ingresados es: " + methods.mtdListaNumeros(lista));
-        methods.mtdFactorial(1);
-        methods.mtdFactorial(2);
-        methods.mtdFactorial(3);
-        methods.mtdFactorial(4);
-        methods.mtdFactorial(5);
-        methods.mtdFactorial(6);
+
+        for (int num = 0; num < 100; num++) {
+
+            methods.mtdFactorial(String.format("%d", num));
+        }
     }
 }
 
@@ -50,7 +49,17 @@ class Methods {
     // · Opción 2: Método llamado mtdFactorial que contenga el cálculo del factorial
     // de un número leído en el método principal. La impresión del resultado se
     // realiza en el método mtdFactorial.
-    public void mtdFactorial(int num) {
+    public void mtdFactorial(String string_num) {
+        var maybe_num = Optional.ofNullable(Integer.parseInt(string_num));
+        if (maybe_num.isEmpty()) {
+            System.out.println("El número no es válido.");
+            return;
+        }
+        var num = maybe_num.get();
+        if (num < 0) {
+            System.out.println("El número no puede ser negativo.");
+            return;
+        }
         BigDecimal factorial = new BigDecimal(1);
         for (int i = 1; i <= num; i++) {
             factorial = factorial.multiply(new BigDecimal(i));
