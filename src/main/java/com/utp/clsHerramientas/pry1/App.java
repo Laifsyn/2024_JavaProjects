@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import com.utp.utils.$;
+import com.utp.utils.Utils;
 
 // · Opción 1: Método llamado mtdListaNumeros, que determina la media de una lista indefinida de números positivos, terminados con un número negativo. La entrada y salidas deben realizarse dentro del método principal.
 public class App {
@@ -66,7 +66,7 @@ class Methods {
         for (int i = 1; i <= num; i++) {
             factorial = factorial.multiply(new BigDecimal(i));
         }
-        System.out.println("El factorial de " + num + " es: " + $.pretty_number(factorial));
+        System.out.println("El factorial de " + num + " es: " + Utils.pretty_number(factorial));
     }
 
 }

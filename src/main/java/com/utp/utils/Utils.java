@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class $ {
+public class Utils {
     final static BigDecimal thousand = BigDecimal.valueOf(1000);
 
     public static String pretty_number(BigDecimal number) {
@@ -61,7 +61,7 @@ public class $ {
     }
 
     static public void pretty_print_int(Integer num) {
-        var triplets = $.into_triplets(num);
+        var triplets = Utils.into_triplets(num);
         for (int i = 0; i < triplets.length; i++) {
             if (i == 0) {
                 System.out.print(triplets[i]);
