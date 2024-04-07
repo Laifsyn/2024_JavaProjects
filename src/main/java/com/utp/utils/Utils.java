@@ -3,9 +3,18 @@ package com.utp.utils;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Optional;
 
 public class Utils {
     final static BigDecimal thousand = BigDecimal.valueOf(1000);
+
+    public static Optional<Integer> try_parse_int(String str) {
+        try {
+            return Optional.of(Integer.parseInt(str));
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
 
     public static String pretty_number(BigDecimal number) {
         var fraction = number.remainder(BigDecimal.ONE);
