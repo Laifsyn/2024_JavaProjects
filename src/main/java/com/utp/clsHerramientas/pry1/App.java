@@ -12,7 +12,8 @@ public class App {
     public static void main(String[] args) {
         Methods methods = new Methods();
         while (true) {
-            String entrada = Cli.read_non_empty_input("Ingrese una opción,");
+            String entrada = Cli.read_non_empty_input(
+                    "Ingrese una opción (1: mtdListaNumeros, 2: mtdFactorial, 3: mtdMediaValor, 4: mtdNumeros),\n");
             if (entrada.equals("exit")) {
                 System.out.println("Saliendo...");
                 System.exit(0);
@@ -26,7 +27,7 @@ public class App {
             System.out.println("Opción seleccionada: " + option);
             switch (option) {
                 default -> System.out.println("Opción no válida.");
-                case 1 -> {
+                case 1 -> { // mtdListaNumeros
                     System.out.println("\nIngrese números positivos, para terminar ingrese un número negativo.");
                     ListaDeNumeros lista = new ListaDeNumeros();
                     while (true) {
@@ -49,12 +50,12 @@ public class App {
                     }
                     System.out.println("La media de los números ingresados es: " + resultado.get());
                 }
-                case 2 -> {
+                case 2 -> { // mtdFactorial
                     String entrada2 = Cli.read_non_empty_input("Ingrese un número para obtener su factorial,");
                     methods.mtdFactorial(entrada2);
                 }
-                case 3 -> methods.mtdMediaValor();
-                case 4 -> {
+                case 3 -> methods.mtdMediaValor(); // mtdMediaValor
+                case 4 -> { // mtdNumeros
                     System.out.println("\nIngrese números, para terminar ingrese un número entre 1 y 5.");
                     while (true) {
                         if (ControlFlow.BREAK == methods.mtdNumeros()) {
@@ -126,7 +127,45 @@ class Methods {
     // sucesivos. La entrada y de datos y cálculos se debe realizar en el método
     // mtdMediaValor y la impresión en el método principal.
     public void mtdMediaValor() {
-
+        Optional<BigDecimal> media_mayor = Optional.empty();
+        Integer[] pareja = new Integer[2];
+        ciclo_parejas: while (true) {
+            String[] str_pareja = Cli
+                    .read_non_empty_input(
+                            "Ingrese dos numeros separados con un coma. Ingrese 999 para imprimir el resultado.")
+                    .split(",", 2);
+            if (str_pareja.length != 2) {
+                System.out.println("Debe ingresar dos números separados por coma.");
+                continue;
+            }
+            for (int i = 0; i < 2; i++) {
+                var entry = str_pareja[i].trim();
+                Optional<Integer> maybe_num = Utils.try_parse_int(entry);
+                if (maybe_num.isEmpty()) {
+                    System.out.println("`" + entry + "` No es convertible a número.");
+                    continue ciclo_parejas;
+                }
+                pareja[i] = maybe_num.get();
+            }
+            var insertable = new BigDecimal((pareja[0] + pareja[1]) / 2.0);
+            if (media_mayor.isEmpty()) {
+                media_mayor = Optional.of(insertable);
+            } else {
+                var media_actual = media_mayor.get();
+                if (insertable.compareTo(media_actual) > 0) {
+                    media_mayor = Optional.of(insertable);
+                }
+            }
+            // Romper del ciclo si el segundo numero es 999
+            if (pareja[1] == 999) {
+                break;
+            }
+        }
+        if (media_mayor.isEmpty()) {
+            throw new RuntimeException("Es imposible que no se hayan ingresado parejas.");
+        } else {
+            System.out.println("La media más alta es: " + media_mayor.get());
+        }
     }
 
     // • Opción 4: Método llamado mtdNumeros que lea e imprima sucesivamente números
