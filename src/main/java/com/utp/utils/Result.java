@@ -4,7 +4,8 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public class Result<T, E> {
-
+    // src from
+    // https://medium.com/@afcastano/monads-for-java-developers-part-2-the-result-and-log-monads-a9ecc0f231bb
     private Optional<T> value;
     private Optional<E> error;
 
@@ -41,12 +42,28 @@ public class Result<T, E> {
         return error.get();
     }
 
-    public <U> Result<U, E> flatMap(Function<T, Result<U,E>> mapper) {
-
+    // maps Result<T, E> to Result<U, E>, returning the same error, if any
+    public <U> Result<U, E> flatMap(Function<T, Result<U, E>> mapper) {
         if (this.isError()) {
             return Result.error(error.get());
         }
 
         return mapper.apply(value.get());
     }
+
+    // public <U> Result<U, E> mapOk(Function<T, U> mapper) {
+    // if (this.isError()) {
+    // return Result.error(error.get());
+    // }
+
+    // return Result.ok(mapper.apply(value.get()));
+    // }
+
+    // public <NewErr> Result<T, NewErr> mapError(Function<E, NewErr> mapper) {
+    // if (this.isOk()) {
+    // return Result.ok(value.get());
+    // }
+
+    // return Result.error(mapper.apply(error.get()));
+    // }
 }
