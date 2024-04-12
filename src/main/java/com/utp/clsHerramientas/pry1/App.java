@@ -132,7 +132,7 @@ class Methods {
         ciclo_parejas: while (true) {
             String[] str_pareja = Cli
                     .read_non_empty_input(
-                            "Ingrese dos numeros separados con un coma. Ingrese 999 para imprimir el resultado.")
+                            "Ingrese dos numeros separados con un coma. Ingrese 999 para proseguir a imprimir el resultado.")
                     .split(",", 2);
             if (str_pareja.length != 2) {
                 System.out.println("Debe ingresar dos números separados por coma.");
@@ -145,6 +145,9 @@ class Methods {
                     System.out.println("`" + entry + "` No es convertible a número.");
                     continue ciclo_parejas;
                 }
+                if (maybe_num.get() == 999) {
+                    break ciclo_parejas;
+                }
                 pareja[i] = maybe_num.get();
             }
             var insertable = new BigDecimal((pareja[0] + pareja[1]) / 2.0);
@@ -155,10 +158,6 @@ class Methods {
                 if (insertable.compareTo(media_actual) > 0) {
                     media_mayor = Optional.of(insertable);
                 }
-            }
-            // Romper del ciclo si el segundo numero es 999
-            if (pareja[1] == 999) {
-                break;
             }
         }
         if (media_mayor.isEmpty()) {
