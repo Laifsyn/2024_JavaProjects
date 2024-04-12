@@ -65,7 +65,7 @@ public class App {
                         BigDecimal result = InteresCompositivo.calcularInteres(capital.get(), tasa.get(),
                                 semanas.get());
                         System.out.printf(
-                                "El capital total acumulado al final del período de `%d` semanas para un capital de `%s` es: `%s` \n",
+                                "El capital total acumulado al final del período de `%d` semanas para un capital de `%s` es: `%s` \n\n",
                                 semanas.get(), capital.get().setScale(2, RoundingMode.HALF_EVEN).toPlainString(),
                                 result.setScale(2, RoundingMode.HALF_EVEN));
                         break;
