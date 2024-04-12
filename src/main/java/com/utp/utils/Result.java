@@ -30,6 +30,10 @@ public class Result<T, E> {
         return value.isPresent();
     }
 
+    public T get() throws RuntimeException {
+        return unwrapOk();
+    }
+
     public T unwrapOk() throws RuntimeException {
         if (this.isError())
             throw new RuntimeException("Called unwrapOk on an error Result");
@@ -42,7 +46,6 @@ public class Result<T, E> {
         return error.get();
     }
 
-    // maps Result<T, E> to Result<U, E>, returning the same error, if any
     public <U> Result<U, E> flatMap(Function<T, Result<U, E>> mapper) {
         if (this.isError()) {
             return Result.error(error.get());

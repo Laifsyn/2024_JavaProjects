@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "App",
+            "request": "launch",
+            "mainClass": "com.utp.clsHerramientas.pry2.App",
+            "projectName": "my-app"
+        },
+        {
+            "type": "java",
             "name": "RepNumericas",
             "request": "launch",
             "mainClass": "com.utp.clsEstructuraDatos.pry2.app.RepNumericas",
