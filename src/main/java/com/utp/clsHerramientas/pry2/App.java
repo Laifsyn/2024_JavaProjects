@@ -1,30 +1,158 @@
 package com.utp.clsHerramientas.pry2;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import javax.lang.model.type.NullType;
 
 import com.utp.utils.Result;
 
 public class App {
+    public static Optional<String> readLine() {
+        return Optional.ofNullable(System.console().readLine());
+    }
 
-    // Escriba un programa en java que permita poner en funcionamiento los
-    // siguientes módulos:
-    //
-    // • Muchos bancos y cajas de ahorro calculan los intereses de las cantidades
-    // depositadas por los clientes diariamente según las premisas siguientes. Un
-    // capital de 1,000 dólares, con una tasa de interés del 6 por 100, renta un
-    // interés en un día de 0.06 multiplicado por 1,000 y dividido por 365. Esta
-    // operación producirá 0,16 dólares de interés y el capital acumulado será
-    // 1,000.16. El interés para el segundo día se calculará multiplicando 0.06 por
-    // 1,000 y dividiendo el resultado por 365. Diseñar un módulo que reciba tres
-    // entradas: el capital a depositar, la tasa de interés y la duración del
-    // depósito en semanas, y calcular el capital total acumulado al final del
-    // período de tiempo especificado.
+    static Result<BigDecimal, String> readBigDecimal(String message) {
+        System.out.print(message);
+        Optional<String> line = readLine();
+        if (line.isEmpty()) {
+            return Result.error("No se ingresó un valor.");
+        }
+        try {
+            return Result.ok(new BigDecimal(line.get()));
+        } catch (Exception e) {
+            return Result.error("El valor ingresado no es un número : `{}`\n".replace("{}", line.get()));
+        }
+    }
+
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        while (true) {
+            System.out.println("1-) Calcular el interes compuesto.");
+            System.out.println("2-) Calcular la velocidad de los corredores.");
+            System.out.println("3-) Salir.");
+            var opcion = System.console().readLine();
+            switch (opcion) {
+                default ->
+                    System.out.println("Opción no válida.");
+                case "1" -> {
+                    while (true) {
+                        // Leer los valores de entrada
+                        Result<BigDecimal, String> capital = readBigDecimal("Ingrese el capital a depositar: ");
+                        if (capital.isError()) {
+                            System.out.println(capital.unwrapError());
+                            continue;
+                        }
+                        Result<BigDecimal, String> tasa = readBigDecimal("Ingrese la tasa de interés: ");
+                        if (tasa.isError()) {
+                            System.out.println(tasa.unwrapError());
+                            continue;
+                        }
+                        Result<Integer, String> semanas = readBigDecimal(
+                                "Ingrese la duración del depósito en semanas: ")
+                                .flatMap((bd) -> {
+                                    return Result.ok(bd.intValue());
+                                });
+                        if (semanas.isError()) {
+                            System.out.println(semanas.unwrapError());
+                            continue;
+                        }
+                        // Calcular el interes compuesto
+                        BigDecimal result = InteresCompositivo.calcularInteres(capital.get(), tasa.get(),
+                                semanas.get());
+                        System.out.printf(
+                                "El capital total acumulado al final del período de `%d` semanas para un capital de `%s` es: `%s` \n",
+                                semanas.get(), capital.get().setScale(2, RoundingMode.HALF_EVEN).toPlainString(),
+                                result.setScale(2, RoundingMode.HALF_EVEN));
+                        break;
+                    }
+                }
+                case "2" -> {
+                    var tiempoCarrera = new TiempoCarrera();
+                    while (true) {
+                        System.out.println(
+                                "Ingrese el tiempo de los corredores en el formato`(minutos, segundos)... Ingrese (0,0) para salir`: ");
+                        String entrada = System.console().readLine().trim();
+                        // Verificar si la entrada de dato esta en el formato adecuado
+                        if (!entrada.matches("\\(.*\\)")) {
+                            System.out.printf("`%s` no esá en un formato reconocible.\n");
+                            continue;
+                        }
+                        // Extraer los valores de la entrada
+                        String[] entradas = entrada.substring(1, entrada.length() - 1).split(",");
+                        if (entradas[0].equals("0") && entradas[1].equals("0")) {
+                            System.out.println("Obteniendo datos....\n");
+                            break;
+                        }
+                        // Intentar convertir los valores a enteros
+                        List<Result<Integer, String>> resultados = Arrays.asList(tryParseInt(entradas[0]),
+                                tryParseInt(entradas[1]));
+                        // Verificar si hay errores en los datos
+                        StringBuilder errors = new StringBuilder();
+                        for (var result : resultados) {
+                            if (result.isError()) {
+                                errors.append(result.unwrapError() + "\n");
+                            }
+                        }
+                        if (!errors.isEmpty()) {
+                            System.out.println(errors.toString());
+                            continue;
+                        }
+                        // Obtener los datos en entero
+                        var minuto = resultados.get(0).unwrapOk();
+                        var segundo = resultados.get(1).unwrapOk();
+                        // Verificar si se tiene que salir
+                        if (minuto == 0 && segundo == 0) {
+                            break;
+                        }
+                        Result<NullType, String> result = tiempoCarrera.insertarTiempo(new int[] { minuto, segundo });
+                        if (result.isError()) {
+                            System.out.println(result.unwrapError());
+                        }
+                    }
+                    tiempoCarrera.imprimirVelocidad();
+                }
+                case "3" -> {
+                    return;
+                }
+            }
+        }
+    }
+
+    static Result<Integer, String> tryParseInt(String input) {
+        try {
+            return Result.ok(Integer.parseInt(input));
+        } catch (Exception e) {
+            return Result.error(String.format("`%s` is not a valid format", input));
+        }
+    }
+
+}
+
+// • Muchos bancos y cajas de ahorro calculan los intereses de las cantidades
+// depositadas por los clientes diariamente según las premisas siguientes. Un
+// capital de 1,000 dólares, con una tasa de interés del 6 por 100, renta un
+// interés en un día de 0.06 multiplicado por 1,000 y dividido por 365. Esta
+// operación producirá 0,16 dólares de interés y el capital acumulado será
+// 1,000.16. El interés para el segundo día se calculará multiplicando 0.06 por
+// 1,000 y dividiendo el resultado por 365. Diseñar un módulo que reciba tres
+// entradas: el capital a depositar, la tasa de interés y la duración del
+// depósito en semanas, y calcular el capital total acumulado al final del
+// período de tiempo especificado.
+class InteresCompositivo {
+    public static final int scale = 64;
+
+    public static BigDecimal calcularInteres(BigDecimal capital, BigDecimal tasa, int semanas) {
+        // Interes Calculado => Capital * ( 1.0 + Tasa/(365*100) ) ^ (semanas * 7)
+        var en_plazo_de = BigDecimal.valueOf(365);
+        var tasa_decimal = tasa.divide(BigDecimal.valueOf(100).multiply(en_plazo_de), scale,
+                RoundingMode.HALF_EVEN);
+        BigDecimal interes = BigDecimal.ONE.add(tasa_decimal);
+        return capital.multiply(interes.pow(semanas * 7));
     }
 }
 
@@ -37,7 +165,7 @@ public class App {
 // datos.
 class TiempoCarrera {
     ArrayList<Duration> tiempos = new ArrayList<Duration>();
-    static final int DISTANCIA = 1500;
+    static final double DISTANCIA = 1500.0;
 
     public Result<NullType, String> insertarTiempo(int[] tiempo) {
         if (tiempo.length != 2) {
@@ -60,9 +188,15 @@ class TiempoCarrera {
 
     public void imprimirVelocidad() {
         Integer contador = 1;
+        if (tiempos.isEmpty()) {
+            System.out.println("No se ingresaron tiempos.");
+            return;
+        }
         for (var tiempo : tiempos) {
-            BigDecimal velocidad = BigDecimal.valueOf(DISTANCIA / tiempo.getSeconds());
-            System.out.printf("%s-)Velocidad: %s m/s", contador, velocidad);
+            BigDecimal velocidad = BigDecimal.valueOf(DISTANCIA / tiempo.getSeconds()).setScale(2,
+                    RoundingMode.HALF_EVEN);
+            System.out.printf("%s-)Velocidad: %s m/s (tiempo: %s)\n", contador, velocidad, tiempo.toString());
+            contador++;
         }
     }
 }
