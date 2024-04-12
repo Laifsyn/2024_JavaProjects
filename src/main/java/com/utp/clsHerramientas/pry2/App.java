@@ -8,8 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import javax.lang.model.type.NullType;
-
 import com.utp.utils.Result;
 
 public class App {
@@ -109,7 +107,7 @@ public class App {
                         if (minuto == 0 && segundo == 0) {
                             break;
                         }
-                        Result<NullType, String> result = tiempoCarrera.insertarTiempo(new int[] { minuto, segundo });
+                        Result<Object, String> result = tiempoCarrera.insertarTiempo(new int[] { minuto, segundo });
                         if (result.isError()) {
                             System.out.println(result.unwrapError());
                         }
@@ -167,7 +165,7 @@ class TiempoCarrera {
     ArrayList<Duration> tiempos = new ArrayList<Duration>();
     static final double DISTANCIA = 1500.0;
 
-    public Result<NullType, String> insertarTiempo(int[] tiempo) {
+    public Result<Object, String> insertarTiempo(int[] tiempo) {
         if (tiempo.length != 2) {
             return Result.error("El tiempo debe tener dos valores.");
         }
