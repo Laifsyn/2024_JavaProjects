@@ -24,7 +24,7 @@ public class App {
         try {
             return Result.ok(new BigDecimal(line.get()));
         } catch (Exception e) {
-            return Result.error("El valor ingresado no es un número : `{}`\n".replace("{}", line.get()));
+            return Result.error("El valor ingresado no es un número : `{}`%n".replace("{}", line.get()));
         }
     }
 
@@ -35,8 +35,6 @@ public class App {
             System.out.println("3-) Salir.");
             var opcion = System.console().readLine();
             switch (opcion) {
-                default ->
-                    System.out.println("Opción no válida.");
                 case "1" -> {
                     while (true) {
                         // Leer los valores de entrada
@@ -52,9 +50,7 @@ public class App {
                         }
                         Result<Integer, String> semanas = readBigDecimal(
                                 "Ingrese la duración del depósito en semanas: ")
-                                .flatMap((bd) -> {
-                                    return Result.ok(bd.intValue());
-                                });
+                                        .flatMap(bd -> Result.ok(bd.intValue()));
                         if (semanas.isError()) {
                             System.out.println(semanas.unwrapError());
                             continue;
@@ -63,7 +59,7 @@ public class App {
                         BigDecimal result = InteresCompositivo.calcularInteres(capital.get(), tasa.get(),
                                 semanas.get());
                         System.out.printf(
-                                "El capital total acumulado al final del período de `%d` semanas para un capital de `%s` es: `%s` \n\n",
+                                "El capital total acumulado al final del período de `%d` semanas para un capital de `%s` es: `%s` %n%n",
                                 semanas.get(), capital.get().setScale(2, RoundingMode.HALF_EVEN).toPlainString(),
                                 result.setScale(2, RoundingMode.HALF_EVEN));
                         break;
@@ -77,13 +73,13 @@ public class App {
                         String entrada = System.console().readLine().trim();
                         // Verificar si la entrada de dato esta en el formato adecuado
                         if (!entrada.matches("\\(.*\\)")) {
-                            System.out.printf("`%s` no esá en un formato reconocible.\n");
+                            System.out.printf("`%s` no esá en un formato reconocible.%n");
                             continue;
                         }
                         // Extraer los valores de la entrada
                         String[] entradas = entrada.substring(1, entrada.length() - 1).split(",");
                         if (entradas[0].equals("0") && entradas[1].equals("0")) {
-                            System.out.println("Obteniendo datos....\n");
+                            System.out.println("Obteniendo datos....%n");
                             break;
                         }
                         // Intentar convertir los valores a enteros
@@ -93,7 +89,7 @@ public class App {
                         StringBuilder errors = new StringBuilder();
                         for (var result : resultados) {
                             if (result.isError()) {
-                                errors.append(result.unwrapError() + "\n");
+                                errors.append(result.unwrapError() + "%n");
                             }
                         }
                         if (!errors.isEmpty()) {
@@ -117,6 +113,7 @@ public class App {
                 case "3" -> {
                     return;
                 }
+                default -> System.out.println("Opción no válida.");
             }
         }
     }
@@ -142,12 +139,15 @@ public class App {
 // depósito en semanas, y calcular el capital total acumulado al final del
 // período de tiempo especificado.
 class InteresCompositivo {
-    public static final int scale = 64;
+    public static final int SCALE = 64;
+
+    private InteresCompositivo() {
+    }
 
     public static BigDecimal calcularInteres(BigDecimal capital, BigDecimal tasa, int semanas) {
         // Interes Calculado => Capital * ( 1.0 + Tasa/(365*100) ) ^ (semanas * 7)
         var en_plazo_de = BigDecimal.valueOf(365);
-        var tasa_decimal = tasa.divide(BigDecimal.valueOf(100).multiply(en_plazo_de), scale,
+        var tasa_decimal = tasa.divide(BigDecimal.valueOf(100).multiply(en_plazo_de), SCALE,
                 RoundingMode.HALF_EVEN);
         BigDecimal interes = BigDecimal.ONE.add(tasa_decimal);
         return capital.multiply(interes.pow(semanas * 7));
@@ -162,7 +162,7 @@ class InteresCompositivo {
 // (4,0) (0,0); el último par de datos se utilizará como fin de entrada de
 // datos.
 class TiempoCarrera {
-    ArrayList<Duration> tiempos = new ArrayList<Duration>();
+    ArrayList<Duration> tiempos = new ArrayList<>();
     static final double DISTANCIA = 1500.0;
 
     public Result<Object, String> insertarTiempo(int[] tiempo) {
@@ -175,7 +175,7 @@ class TiempoCarrera {
         if (tiempo[1] >= 60) {
             return Result.error("Los segundos no pueden ser mayores a 59.");
         }
-        var time = Duration.ofSeconds(tiempo[0] * 60 + tiempo[1]);
+        var time = Duration.ofSeconds(tiempo[0] * 60L + tiempo[1]);
         // Check value isn't higher than 120 minutes
         if (time.toSeconds() > 120 * 60) {
             return Result.error("Los competidores no pueden correr más de 120 minutos.");
@@ -193,7 +193,7 @@ class TiempoCarrera {
         for (var tiempo : tiempos) {
             BigDecimal velocidad = BigDecimal.valueOf(DISTANCIA / tiempo.getSeconds()).setScale(2,
                     RoundingMode.HALF_EVEN);
-            System.out.printf("%s-)Velocidad: %s m/s (tiempo: %s)\n", contador, velocidad, tiempo.toString());
+            System.out.printf("%s-)Velocidad: %s m/s (tiempo: %s)%n", contador, velocidad, tiempo.toString());
             contador++;
         }
     }

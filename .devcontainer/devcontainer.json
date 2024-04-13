@@ -18,13 +18,48 @@
 		"vscode": {
 			"settings": {
 				"workbench.colorTheme": "One Dark Pro Mix",
-				"editor.formatOnSave": true
+				"editor.formatOnSave": true,
+				"sonarlint.rules": {
+					"java:S3776": {
+						"parameters": {
+							"Threshold": 60
+						}
+					},
+					"java:S120": {
+						"level": "off"
+					},
+					"java:S2189": {
+						"level": "off"
+					},
+					"java:S135": {
+						"level": "off"
+					},
+					"java:S117": {
+						"level": "off"
+					},
+					"java:S106": {
+						"level": "off"
+					},
+					"java:S100": {
+						"level": "off"
+					},
+					"java:S1119": {
+						"level": "off"
+					},
+					"java:S6541": {
+						"level": "off"
+					},
+					"java:S2275": {
+						"level": "off"
+					}
+				}
 			},
 			"extensions": [
 				"formulahendry.code-runner",
 				"usernamehw.errorlens",
 				"ms-vsliveshare.vsliveshare",
 				"zhuangtongfa.material-theme",
+				"SonarSource.sonarlint-vscode",
 				"GitHub.copilot"
 			]
 		}

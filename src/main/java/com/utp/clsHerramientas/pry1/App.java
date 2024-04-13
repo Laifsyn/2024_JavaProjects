@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import com.utp.utils.Cli;
 import com.utp.utils.Utils;
+import com.utp.utils.Cli;
 
 // · Opción 1: Método llamado mtdListaNumeros, que determina la media de una lista indefinida de números positivos, terminados con un número negativo. La entrada y salidas deben realizarse dentro del método principal.
 public class App {
@@ -14,10 +14,6 @@ public class App {
         while (true) {
             String entrada = Cli.read_non_empty_input(
                     "Ingrese una opción (1: mtdListaNumeros, 2: mtdFactorial, 3: mtdMediaValor, 4: mtdNumeros),\n");
-            if (entrada.equals("exit")) {
-                System.out.println("Saliendo...");
-                System.exit(0);
-            }
             Optional<Integer> maybe_option = Utils.try_parse_int(entrada);
             if (maybe_option.isEmpty()) {
                 System.out.println("Opción no es un número convertible.");
@@ -26,7 +22,6 @@ public class App {
             var option = maybe_option.get();
             System.out.println("Opción seleccionada: " + option);
             switch (option) {
-                default -> System.out.println("Opción no válida.");
                 case 1 -> { // mtdListaNumeros
                     System.out.println("\nIngrese números positivos, para terminar ingrese un número negativo.");
                     ListaDeNumeros lista = new ListaDeNumeros();
@@ -63,6 +58,7 @@ public class App {
                         }
                     }
                 }
+                default -> System.out.println("Opción no válida.");
             }
         }
 
@@ -70,16 +66,16 @@ public class App {
 }
 
 class ListaDeNumeros {
-    ArrayList<Integer> Lista = new ArrayList<>();
+    ArrayList<Integer> lista = new ArrayList<>();
 
     ArrayList<Integer> getLista() {
-        return Lista;
+        return lista;
     }
 
     Optional<Integer> push_str(String input) {
         Optional<Integer> num = Utils.try_parse_int(input);
         if (num.isPresent()) {
-            Lista.add(num.get());
+            lista.add(num.get());
         }
         return num;
     }
@@ -150,7 +146,7 @@ class Methods {
                 }
                 pareja[i] = maybe_num.get();
             }
-            var insertable = new BigDecimal((pareja[0] + pareja[1]) / 2.0);
+            var insertable = BigDecimal.valueOf((pareja[0] + pareja[1]) / 2.0);
             if (media_mayor.isEmpty()) {
                 media_mayor = Optional.of(insertable);
             } else {
@@ -161,7 +157,7 @@ class Methods {
             }
         }
         if (media_mayor.isEmpty()) {
-            throw new RuntimeException("Es imposible que no se hayan ingresado parejas.");
+            System.out.println("No se ingresaron parejas de números.");
         } else {
             System.out.println("La media más alta es: " + media_mayor.get());
         }
@@ -174,15 +170,15 @@ class Methods {
         var user_input = Cli.read_non_empty_input("Ingrese un número, ");
         Optional<Integer> maybe_num = Utils.try_parse_int(user_input);
         if (maybe_num.isEmpty()) {
-            System.out.printf("\"%s\" no es número no es válido.\n", user_input);
+            System.out.printf("\"%s\" no es número no es válido.%n", user_input);
             return ControlFlow.CONTINUE;
         }
         var num = maybe_num.get();
         if (num >= 1 && num <= 5) {
-            System.out.printf("\"%d\" SI está comprendido entre 1 y 5.\n", num);
+            System.out.printf("\"%d\" SI está comprendido entre 1 y 5.%n", num);
             return ControlFlow.BREAK;
         }
-        System.out.printf("\"%d\" NO está comprendido entre 1 y 5.\n", num);
+        System.out.printf("\"%d\" NO está comprendido entre 1 y 5.%n", num);
         return ControlFlow.CONTINUE;
     }
 }
