@@ -52,14 +52,18 @@
 					"java:S2275": {
 						"level": "off"
 					}
-				}
+				},
+				"java.format.settings.url": "eclipse-formatter.xml",
+				"java.checkstyle.configuration": "${workspaceFolder}\\checkstyle.xml"
 			},
 			"extensions": [
 				"formulahendry.code-runner",
 				"usernamehw.errorlens",
 				"ms-vsliveshare.vsliveshare",
+				"redhat.java",
 				"zhuangtongfa.material-theme",
-				"SonarSource.sonarlint-vscode",
+				"shengchen.vscode-checkstyle",
+				// "SonarSource.sonarlint-vscode",
 				"GitHub.copilot"
 			]
 		}
