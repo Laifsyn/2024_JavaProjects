@@ -73,11 +73,17 @@ public class App {
                         String entrada = System.console().readLine().trim();
                         // Verificar si la entrada de dato esta en el formato adecuado
                         if (!entrada.matches("\\(.*\\)")) {
-                            System.out.printf("`%s` no esá en un formato reconocible.%n");
+                            System.out.printf("`%s` no esá en un formato reconocible.%n", entrada);
                             continue;
                         }
                         // Extraer los valores de la entrada
                         String[] entradas = entrada.substring(1, entrada.length() - 1).split(",");
+                        // Revisar que se hayan ingresado la cantidad correcta de argumentos
+                        if (entradas.length < 2) {
+                            System.out.printf("Argumentos incompletos en `%s`%n", entrada);
+                            continue;
+                        }
+
                         if (entradas[0].equals("0") && entradas[1].equals("0")) {
                             System.out.println("Obteniendo datos....%n");
                             break;
