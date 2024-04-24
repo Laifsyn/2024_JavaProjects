@@ -12,12 +12,12 @@ public class Either<T, E> {
         this.right = Optional.ofNullable(error);
     }
 
-    public static <U, E> Either<U, E> left(U value) {
-        return new Either<>(value, null);
+    public static <U, E> Either<U, E> left(U left) {
+        return new Either<>(left, null);
     }
 
-    public static <U, E> Either<U, E> right(E error) {
-        return new Either<>(null, error);
+    public static <U, E> Either<U, E> right(E right) {
+        return new Either<>(null, right);
     }
 
     public boolean isRight() {
