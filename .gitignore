@@ -84,6 +84,7 @@ StyleCopReport.xml
 *.pidb
 *.svclog
 *.scc
+.vscode/launch.json
 
 # Chutzpah Test files
 _Chutzpah*
