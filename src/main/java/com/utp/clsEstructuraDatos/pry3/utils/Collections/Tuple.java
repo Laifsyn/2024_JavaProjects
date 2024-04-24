@@ -1,4 +1,4 @@
-package com.utp.clsEstructuraDatos.pry3.Collections;
+package com.utp.clsEstructuraDatos.pry3.utils.Collections;
 
 public interface Tuple {
     static <T1> Tuple1<T1> of(T1 t1) {

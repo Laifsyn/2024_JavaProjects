@@ -1,4 +1,4 @@
-package com.utp.clsEstructuraDatos.pry3.Collections;
+package com.utp.clsEstructuraDatos.pry3.utils.Collections;
 
 public class Tuple1<T1> implements Tuple {
     public final T1 _1;

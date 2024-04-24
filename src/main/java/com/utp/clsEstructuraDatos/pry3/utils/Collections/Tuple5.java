@@ -1,4 +1,4 @@
-package com.utp.clsEstructuraDatos.pry3.Collections;
+package com.utp.clsEstructuraDatos.pry3.utils.Collections;
 
 public class Tuple5<T1, T2, T3, T4, T5> implements Tuple {
 
