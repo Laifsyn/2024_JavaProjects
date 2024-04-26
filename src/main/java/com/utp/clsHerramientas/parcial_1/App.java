@@ -124,40 +124,42 @@ public class App {
                     while (true) {
                         System.out.println("Ingrese los datos iniciales: ");
                         Result<BigDecimal, String> maybe_temperatura = readBigDecimal("Temperatura: ");
-                        if (maybe_temperatura.isError()) {
+                        if (maybe_temperatura.isError()) { // Collapse-able
                             System.out.println(maybe_temperatura.unwrapError());
                             continue;
                         }
                         var maybe_probabilidadLluvia = readBigDecimal("Probabilidad de lluvia: ");
-                        if (maybe_probabilidadLluvia.isError()) {
+                        if (maybe_probabilidadLluvia.isError()) { // Collapse-able
                             System.out.println(maybe_probabilidadLluvia.unwrapError());
                             continue;
                         }
                         var maybe_dias = readBigDecimal("Días a predecir: ");
-                        if (maybe_dias.isError()) {
+                        if (maybe_dias.isError()) { // Collapse-able
                             System.out.println(maybe_dias.unwrapError());
                             continue;
                         }
                         double temperatura = maybe_temperatura.get().doubleValue();
                         int dias = maybe_dias.get().intValue();
-                        if (dias < 0) {
+                        if (dias < 0) { // Collapse-able
                             System.out.println("El número de días no puede ser negativo.");
                             continue;
                         }
                         double probabilidadLluvia = maybe_probabilidadLluvia.get().doubleValue();
 
+                        // Creamos un pronóstico, y una lista de reportes
                         ProbabilidadLluvia pronostico = new ProbabilidadLluvia(temperatura, probabilidadLluvia, dias);
                         ArrayList<ReporteNDia> reportes = new ArrayList<>();
                         for (int i = 0; i < dias; i++) {
                             System.out.println("Ingrese la temperatura del día " + (i + 1) + ": ");
                             maybe_temperatura = readBigDecimal("Temperatura: ");
-                            if (maybe_temperatura.isError()) {
+                            if (maybe_temperatura.isError()) { // Collapse-able
                                 System.out.println(maybe_temperatura.unwrapError());
                                 continue;
                             }
                             double temperatura_hoy = maybe_temperatura.get().doubleValue();
                             Optional<ReporteNDia> reporte = pronostico.next_with_temperatura(temperatura_hoy);
-                            if (reporte.isEmpty()) {
+                            // Ya no hay más días a reportar, asi que salimos del ciclo
+                            if (reporte.isEmpty()) { // Collapse-able
                                 break;
                             }
                             reportes.add(reporte.get());
@@ -166,10 +168,11 @@ public class App {
                             System.out.println("No se ingresaron reportes.");
                             continue;
                         }
+                        // Definimos el estado inicial de las temperaturas y reporte de lluvia
                         double max_temp = reportes.get(0).temperatura();
                         double min_temp = max_temp;
                         int dias_con_lluvia = 0;
-                        for (var reporte : reportes) {
+                        for (ReporteNDia reporte : reportes) {
                             if (reporte.temperatura() > max_temp) {
                                 max_temp = reporte.temperatura();
                             }
@@ -179,15 +182,17 @@ public class App {
                             if (reporte.probabilidadLluvia() >= 100.0) {
                                 dias_con_lluvia++;
                             }
+                            // Imprimimos la información relevante del reporte de N-Día
                             System.out.println(reporte.leer_reporte());
                         }
+                        // Resumen de los pronósticos
                         System.out.printf("%nPronóstico para los próximos %d días:%n", dias);
                         if (dias_con_lluvia == reportes.size()) {
                             System.out.println("Va a llover todos los días.");
                         } else {
                             System.out.printf("Va a llover %d de %d dias%n", dias_con_lluvia, reportes.size());
                         }
-                        // Rango de temperaturas
+                        // Rango de temperaturas a lo largo de pronóstico
                         System.out.printf("Temperatura máxima: %.2f%n", max_temp);
                         System.out.printf("Temperatura mínima: %.2f%n", min_temp);
                         break;
