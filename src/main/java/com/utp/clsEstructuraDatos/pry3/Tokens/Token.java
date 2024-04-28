@@ -1,23 +1,7 @@
 package com.utp.clsEstructuraDatos.pry3.Tokens;
 
-
-public enum Tokens {
-    AND,
-    OR,
-    NOT,
-    IMPLICATES,
-    XAND,
-    PARENTHESE_OPEN,
-    PARENTHESE_CLOSE,
-    EXPRESSION;
-
-    static public Tokens Tokenize(){
-        
-        return AND;
-    }
-    public class Tokenize {
-        
-    }
+public enum Token {
+    AND, OR, NOT, IMPLICATES, XAND, PARENTHESE_OPEN, PARENTHESE_CLOSE, EXPRESSION;
 }
 
 class TokensGroup {
@@ -28,4 +12,3 @@ class TokensGroup {
     final String[] XAND = { "<->" };
     final String[][] DELIMITER = { { "(", ")" } };
 }
-
