@@ -1,8 +1,9 @@
 package com.utp.clsEstructuraDatos.pry3;
 
+
 public record Expression(String expression) {
     final static Character[] VARIABLES = { 'p', 'q', 'r' };
-
+    static Boolean[] values = { false, false, false };
     // Constructor
     public Expression(String expression) {
         this.expression = expression;
@@ -14,6 +15,7 @@ public record Expression(String expression) {
     }
 
     public boolean evaluate() {
+
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

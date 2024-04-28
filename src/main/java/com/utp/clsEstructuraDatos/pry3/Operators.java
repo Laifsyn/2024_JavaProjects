@@ -2,19 +2,19 @@ package com.utp.clsEstructuraDatos.pry3;
 
 /**
  * <p>
- * This interface represents logical operators, which can be one of the
- * following:
+ * Esta interfaz representa operadores lógicos, que pueden ser uno de los
+ * siguientes:
  * </p>
  * <ul>
- * <li>AND: The result is true if both operands are true.</li>
- * <li>OR: The result is true if at least one operand is true.</li>
- * <li>NOT: The result is the opposite of the operand.</li>
- * <li>IMPLICATES: The result is false only if the first operand is true and
- * the second operand is false.</li>
+ * <li>AND: El resultado es verdadero si ambos operandos son verdaderos.</li>
+ * <li>OR: El resultado es verdadero si al menos uno de los operandos es verdadero.</li>
+ * <li>NOT: El resultado es el opuesto del operando.</li>
+ * <li>IMPLICATES: El resultado es falso solo si el primer operando es verdadero y
+ * el segundo operando es falso.</li>
  * </ul>
  * 
- * Enums that holds data.
- * Based on this implementation in reddit by `NitronHX`.
+ * Enumeraciones que contienen datos.
+ * Basado en esta implementación en reddit por `NitronHX`.
  * 
  * @see <a href=
  *      "https://www.reddit.com/r/java/comments/135i37c/rust_like_enums_in_java/">{@literal
@@ -38,25 +38,29 @@ public sealed interface Operators {
     }
 
     /**
-     * The IMPLICATES operator represents the logical implication operation.
-     * The truth table for this operation is as follows:
+     * El operador IMPLICATES representa la operación de implicación lógica.
+     * La tabla de verdad para esta operación es la siguiente:
      *
      * <pre>
-     * `Implicates` Truth table
+     * Tabla de verdad de `Implicates`
      * | lhs | rhs | lhs -> rhs |
      * |-----|-----|------------|
      * | T   | T   | T          |
      * | T   | F   | F          |
      * | F   | T   | T          |
      * | F   | F   | T          |
+     * Explicación:
+     * <ul>
+     * <li>- Si tanto `lhs` como `rhs` son verdaderos, el resultado es
+     * verdadero.</li>
+     * <li>- Si `lhs` es verdadero y `rhs` es falso, el resultado es falso.</li>
+     * <li>- Si `lhs` es falso, el resultado es verdadero independientemente del
+     * valor de `rhs`.</li>
+     * </ul>
      * </pre>
      *
-     * Explanation:
-     * - If both `lhs` and `rhs` are true, the result is true.
-     * - If `lhs` is true and `rhs` is false, the result is false.
-     * - If `lhs` is false, the result is true regardless of the value of `rhs`.
-     *
-     * @return the result of the logical implication operation
+     * 
+     * @return el resultado de la operación de implicación lógica
      */
     record IMPLICATES(Expression lhs, Expression rhs) implements Operators {
         @Override
