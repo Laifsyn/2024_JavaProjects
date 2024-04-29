@@ -1,19 +1,17 @@
 package com.utp.clsEstructuraDatos.pry3.Tokens;
 
-import java.beans.Expression;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Optional;
 
 public sealed interface Token {
+    public final static int MAX_CHARS = TokensGroup.MAX_CHARS;
+
     public static Token fromString(String substring) {
         substring = substring.trim();
         if (substring.isEmpty()) {
             return new Token.EMPTY();
         }
-        if (substring.length() > TokensGroup.max_chars) {
-            return new Token.INVALID(new Exception("Token too long - Max length: " + TokensGroup.max_chars));
-        }
+
         Token result = TokensGroup.tokens.get(substring);
         return result;
 
@@ -21,7 +19,7 @@ public sealed interface Token {
 
     public String toString();
 
-    record AND() implements Token {
+    public record AND(String inner_string) implements Token {
         @Override
         public String toString() {
             return "&";
@@ -29,90 +27,120 @@ public sealed interface Token {
 
     }
 
-    record OR() implements Token {
+    public record OR(String inner_string) implements Token {
         @Override
         public String toString() {
             return "|";
         }
     }
 
-    record NOT() implements Token {
+    public record NOT(String inner_string) implements Token {
         @Override
         public String toString() {
             return "~";
         }
     }
 
-    record IMPLICATES() implements Token {
+    public record IMPLICATES(String inner_string) implements Token {
         @Override
         public String toString() {
             return "->";
         }
     }
 
-    record XAND() implements Token {
+    public record XAND(String inner_string) implements Token {
         @Override
         public String toString() {
-            return "<->";
+            return inner_string;
         }
     }
 
-    /**
-     * A token representing an expression. the inner value of the expression can be
-     * evaluated into a bool.
-     */
-    record EXPRESSION(Optional<String[]> parentheses, Expression expression) implements Token {
 
-        public EXPRESSION(Optional<String[]> parentheses, String expression) {
-            if (parentheses.isPresent()) {
-                String[] parens = parentheses.get();
-                if (parens.length != 2) {
-                    throw new IllegalArgumentException("Invalid parentheses: " + Arrays.toString(parens));
-                }
-                for (var valid_delimiters : TokensGroup.DELIMITER) {
-                    if (valid_delimiters[0].equals(parens[0]) && valid_delimiters[1].equals(parens[1])) {
-                        this.parentheses = parentheses;
-                        this.expression = expression;
-                        return;
-                    }
-                }
-                throw new IllegalArgumentException("Invalid parentheses: " + Arrays.toString(parens)
-                        + "%nExpected any of the following:" + Arrays.deepToString(TokensGroup.DELIMITER));
-            } else {
-                this.parentheses = Optional.empty();
-                this.expression = expression;
-            }
-        }
 
+    // /**
+    // * A token representing an expression. the inner value of the expression can
+    // be
+    // * evaluated into a bool.
+    // */
+    // record EXPRESSION(Optional<String[]> parentheses, Expression expression)
+    // implements Token {
+
+    // public EXPRESSION(Optional<String[]> parentheses, String expression) {
+    // if (parentheses.isPresent()) {
+    // String[] parens = parentheses.get();
+    // if (parens.length != 2) {
+    // throw new IllegalArgumentException("Invalid parentheses: " +
+    // Arrays.toString(parens));
+    // }
+    // for (var valid_delimiters : TokensGroup.DELIMITER) {
+    // if (valid_delimiters[0].equals(parens[0]) &&
+    // valid_delimiters[1].equals(parens[1])) {
+    // this.parentheses = parentheses;
+    // this.expression = expression;
+    // return;
+    // }
+    // }
+    // throw new IllegalArgumentException("Invalid parentheses: " +
+    // Arrays.toString(parens)
+    // + "%nExpected any of the following:" +
+    // Arrays.deepToString(TokensGroup.DELIMITER));
+    // } else {
+    // this.parentheses = Optional.empty();
+    // this.expression = expression;
+    // }
+    // }
+
+    // @Override
+    // public String toString() {
+    // String[] parentheses = this.parentheses.orElse(new String[] { "", "" });
+    // return "EXPRESSION(\"" + parentheses[0] + expression + parentheses[1] +
+    // "\")";
+    // }
+    // }
+
+    public record IDENTIFIER(String ident) implements Token {
         @Override
         public String toString() {
-            String[] parentheses = this.parentheses.orElse(new String[] { "", "" });
-            return "EXPRESSION(\"" + parentheses[0] + expression + parentheses[1] + "\")";
+            return "IDENTIFIER(" + ident + ")";
         }
     }
 
-    record IDENTIFIER(String value) implements Token {
+    public record OPEN_PAREN(char paren) implements Token {
         @Override
         public String toString() {
-            return "IDENTIFIER(" + value + ")";
+            return paren + "";
         }
     }
 
-    record UNKNOWN(String value) implements Token {
+    public record CLOSE_PAREN(char paren) implements Token {
         @Override
         public String toString() {
-            return "UNKNOWN(" + value + ")";
+            return paren + "";
         }
     }
 
-    record INVALID(Exception e) implements Token {
+    public record UNEXPECTED(String substring) implements Token {
         @Override
         public String toString() {
-            return e.getMessage();
+            return "`" + substring + "` is an invalid token";
+        }
+    }
+    
+    public record EOL(String inner_string) implements Token{
+        @Override
+        public String toString() {
+            return inner_string;
         }
     }
 
-    record EMPTY() implements Token {
+    public record EXPECTS(String inner_string, Optional<String> expects_next) implements Token {
+        @Override
+        public String toString() {
+            return "`" + inner_string + "` expects: `" + expects_next.orElseGet(() -> "{unknown}") + "`";
+        }
+    }
+
+    public record EMPTY() implements Token {
         @Override
         public String toString() {
             return "{EMPTY}";
@@ -127,16 +155,16 @@ public sealed interface Token {
 // }
 
 class TokensGroup {
-    static final int max_chars = 3;
+    static final int MAX_CHARS = 3;
     static final HashMap<String, Token> tokens = new HashMap<String, Token>() {
         {
-            put(AND[0], new Token.AND());
-            put(AND[1], new Token.AND());
-            put(OR[0], new Token.OR());
-            put(NOT[0], new Token.NOT());
-            put(NOT[1], new Token.NOT());
-            put(IMPLICATES[0], new Token.IMPLICATES());
-            put(XAND[0], new Token.XAND());
+            put(AND[0], new Token.AND(AND[0]));
+            put(AND[1], new Token.AND(AND[1]));
+            put(OR[0], new Token.OR(OR[0]));
+            put(NOT[0], new Token.NOT(NOT[0]));
+            put(NOT[1], new Token.NOT(NOT[1]));
+            put(IMPLICATES[0], new Token.IMPLICATES(IMPLICATES[0]));
+            put(XAND[0], new Token.XAND(XAND[0]));
 
             for (var delimiters : DELIMITER) {
                 assert delimiters.length == 2 : delimiters.toString() + " isn't a valid delimiter - Expects 2 elements";
