@@ -1,5 +1,7 @@
 package com.utp.clsEstructuraDatos.pry3;
 
+import java.util.Optional;
+
 import com.utp.clsEstructuraDatos.pry3.Tokens.Token;
 import com.utp.utils.Result;
 
@@ -16,14 +18,10 @@ import com.utp.utils.Result;
  * <li>IMPLICATES: El resultado es falso solo si el primer operando es verdadero
  * y
  * el segundo operando es falso.</li>
+ * <li>XAND: El Resultado es verdadero solo si ambas entradar son o Verdaderas o
+ * Falsas
  * </ul>
  * 
- * Enumeraciones que contienen datos.
- * Basado en esta implementación en reddit por `NitronHX`.
- * 
- * @see <a href=
- *      "https://www.reddit.com/r/java/comments/135i37c/rust_like_enums_in_java/">{@literal
- *      Reddit Post on Result< T >}</a>
  */
 public enum Operator {
     AND, OR, NOT, IMPLICATES, XAND;
@@ -41,13 +39,35 @@ public enum Operator {
     public static Result<Operator, Token> fromToken(Token token) {
 
         Result<Operator, Token> ops = switch (token) {
-            case Token.AND() -> Result.ok(AND);
-            case Token.OR() -> Result.ok(OR);
-            case Token.NOT() -> Result.ok(NOT);
-            case Token.IMPLICATES() -> Result.ok(IMPLICATES);
-            case Token.XAND() -> Result.ok(XAND);
+            case Token.AND(var _unused) -> Result.ok(AND);
+            case Token.OR(var _unused) -> Result.ok(OR);
+            case Token.NOT(var _unused) -> Result.ok(NOT);
+            case Token.IMPLICATES(var _unused) -> Result.ok(IMPLICATES);
+            case Token.XAND(var _unused) -> Result.ok(XAND);
             default -> Result.error(token);
         };
         return ops;
     }
+
+    public static boolean eval(boolean lhs, Operator op, Optional<Boolean> rhs) {
+        return op.eval(lhs, rhs);
+    }
+
+    public boolean eval(boolean rhs, Optional<Boolean> maybe_lhs) {
+        boolean lhs = false;
+        if (this != Operator.OR) {
+            if (maybe_lhs.isEmpty())
+                throw new IllegalArgumentException("No second input was provided when Operator was " + this);
+            lhs = maybe_lhs.get();
+        }
+        boolean op = switch (this) {
+            case AND -> (rhs && lhs);
+            case OR -> (rhs || lhs);
+            case NOT -> (!rhs);
+            case IMPLICATES -> (!lhs || rhs);
+            case XAND -> (rhs == lhs);
+        };
+        return op;
+    }
+
 }
