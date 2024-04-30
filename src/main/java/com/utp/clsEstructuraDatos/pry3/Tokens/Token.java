@@ -3,23 +3,61 @@ package com.utp.clsEstructuraDatos.pry3.Tokens;
 import java.util.HashMap;
 import java.util.Optional;
 
+import com.utp.clsEstructuraDatos.pry3.Operator;
+import com.utp.utils.Result;
+
+/**
+ * Enumeraciones que contienen datos.
+ * Basado en esta implementación en reddit por `NitronHX`.
+ * 
+ * @see <a href=
+ *      "https://www.reddit.com/r/java/comments/135i37c/rust_like_enums_in_java/">{@literal
+ *      Reddit Post on Result< T >}</a>
+ */
 public sealed interface Token {
     public final static int MAX_CHARS = TokensGroup.MAX_CHARS;
+    public static final HashMap<String, Operator> ops_substrings = TokensGroup.ops_map;
 
+    /**
+     * Convierte una subcadena en un token. Si se puede determinar el token, devuelve el token.
+     * <p>En caso de no poder, pero se tiene una conjetura de qué es, devuelve Token.EXPECTS({@code substring},?)</p>
+     * <p>En caso de poder determinar que no es un token reconocido, devuelve Token.UNEXPECTED({@code substring})</p>
+     * 
+     * @param substring
+     * @return
+     */
     public static Token fromString(String substring) {
-        substring = substring.trim();
+
         if (substring.isEmpty()) {
             return new Token.EMPTY();
         }
 
-        Token result = TokensGroup.tokens.get(substring);
-        return result;
+        // Revisamos si la subcadena es un token conocido
+        Token maybe_token = TokensGroup.tokens_map.get(substring);
+        if (maybe_token != null) {
+            return maybe_token;
+        }
+        // Significa que la subcadena "aún" no es conocido, asi que hacemos más
+        // chequeos.
 
+        // Revisamos si la subcadena es parte de algun token multi-caracter definido
+        Result<Optional<String>, Integer> result = TokensGroup.string_from_substring(substring);
+        if (result.isError()) {
+            // Si hay más de una coincidencia, entonces no se puede determinar qué token es.
+            return new Token.EXPECTS(substring, Optional.empty());
+        }
+        Optional<String> subcadena = result.unwrapOk();
+        if (subcadena.isPresent()) {
+            return Token.fromString(subcadena.get());
+        } else {
+            // Si no hay coincidencias, entonces la subcadena no es un token conocido.
+            return new Token.UNEXPECTED(substring);
+        }
     }
 
     public String toString();
 
-    public record AND(String inner_string) implements Token {
+    record AND(String inner_string) implements Token {
         @Override
         public String toString() {
             return "&";
@@ -27,123 +65,97 @@ public sealed interface Token {
 
     }
 
-    public record OR(String inner_string) implements Token {
+    record OR(String inner_string) implements Token {
         @Override
         public String toString() {
             return "|";
         }
     }
 
-    public record NOT(String inner_string) implements Token {
+    record NOT(String inner_string) implements Token {
         @Override
         public String toString() {
             return "~";
         }
     }
 
-    public record IMPLICATES(String inner_string) implements Token {
+    record IMPLICATES(String inner_string) implements Token {
         @Override
         public String toString() {
             return "->";
         }
     }
 
-    public record XAND(String inner_string) implements Token {
+    record XAND(String inner_string) implements Token {
         @Override
         public String toString() {
             return inner_string;
         }
     }
 
-
-
-    // /**
-    // * A token representing an expression. the inner value of the expression can
-    // be
-    // * evaluated into a bool.
-    // */
-    // record EXPRESSION(Optional<String[]> parentheses, Expression expression)
-    // implements Token {
-
-    // public EXPRESSION(Optional<String[]> parentheses, String expression) {
-    // if (parentheses.isPresent()) {
-    // String[] parens = parentheses.get();
-    // if (parens.length != 2) {
-    // throw new IllegalArgumentException("Invalid parentheses: " +
-    // Arrays.toString(parens));
-    // }
-    // for (var valid_delimiters : TokensGroup.DELIMITER) {
-    // if (valid_delimiters[0].equals(parens[0]) &&
-    // valid_delimiters[1].equals(parens[1])) {
-    // this.parentheses = parentheses;
-    // this.expression = expression;
-    // return;
-    // }
-    // }
-    // throw new IllegalArgumentException("Invalid parentheses: " +
-    // Arrays.toString(parens)
-    // + "%nExpected any of the following:" +
-    // Arrays.deepToString(TokensGroup.DELIMITER));
-    // } else {
-    // this.parentheses = Optional.empty();
-    // this.expression = expression;
-    // }
-    // }
-
-    // @Override
-    // public String toString() {
-    // String[] parentheses = this.parentheses.orElse(new String[] { "", "" });
-    // return "EXPRESSION(\"" + parentheses[0] + expression + parentheses[1] +
-    // "\")";
-    // }
-    // }
-
-    public record IDENTIFIER(String ident) implements Token {
+    record IDENTIFIER(String ident) implements Token {
         @Override
         public String toString() {
             return "IDENTIFIER(" + ident + ")";
         }
     }
 
-    public record OPEN_PAREN(char paren) implements Token {
+    record OPEN_PAREN(char paren) implements Token {
         @Override
         public String toString() {
             return paren + "";
         }
     }
 
-    public record CLOSE_PAREN(char paren) implements Token {
+    record CLOSE_PAREN(char paren) implements Token {
         @Override
         public String toString() {
             return paren + "";
         }
     }
 
-    public record UNEXPECTED(String substring) implements Token {
+    /**
+     * Significa que este token no es reconocido.
+     */
+    record UNEXPECTED(String substring) implements Token {
         @Override
         public String toString() {
             return "`" + substring + "` is an invalid token";
         }
     }
-    
-    public record EOL(String inner_string) implements Token{
+
+    record EOL(String inner_string) implements Token {
         @Override
         public String toString() {
             return inner_string;
         }
     }
 
-    public record EXPECTS(String inner_string, Optional<String> expects_next) implements Token {
+    /**
+     * Un token que espera contiene un substring, y un posible hint hint de qué
+     * cadena sigue. Si el hint es vacío, significa que aún no se sabe qué sigue.
+     * 
+     * @param inner_string
+     * @param expects_next
+     */
+    record EXPECTS(String inner_string, Optional<String> expects_next) implements Token {
         @Override
         public String toString() {
             return "`" + inner_string + "` expects: `" + expects_next.orElseGet(() -> "{unknown}") + "`";
         }
     }
 
-    public record EMPTY() implements Token {
+    record EMPTY() implements Token {
         @Override
         public String toString() {
             return "{EMPTY}";
+        }
+    }
+
+    record BLANKSPACE(int length) implements Token {
+        @Override
+        public String toString() {
+            return " ".repeat(length);
         }
     }
 
@@ -156,8 +168,11 @@ public sealed interface Token {
 
 class TokensGroup {
     static final int MAX_CHARS = 3;
-    static final HashMap<String, Token> tokens = new HashMap<String, Token>() {
+    static final HashMap<String, Token> tokens_map = new HashMap<String, Token>() {
         {
+            put(IDENT[0], new Token.IDENTIFIER(IDENT[0]));
+            put(IDENT[1], new Token.IDENTIFIER(IDENT[1]));
+            put(IDENT[2], new Token.IDENTIFIER(IDENT[2]));
             put(AND[0], new Token.AND(AND[0]));
             put(AND[1], new Token.AND(AND[1]));
             put(OR[0], new Token.OR(OR[0]));
@@ -165,22 +180,77 @@ class TokensGroup {
             put(NOT[1], new Token.NOT(NOT[1]));
             put(IMPLICATES[0], new Token.IMPLICATES(IMPLICATES[0]));
             put(XAND[0], new Token.XAND(XAND[0]));
+            put(DELIMITER[0][0], new Token.OPEN_PAREN(DELIMITER[0][0].charAt(0)));
+            put(DELIMITER[0][1], new Token.CLOSE_PAREN(DELIMITER[0][1].charAt(0)));
 
             for (var delimiters : DELIMITER) {
                 assert delimiters.length == 2 : delimiters.toString() + " isn't a valid delimiter - Expects 2 elements";
             }
 
-            int static_members = count_members();
+            int static_members = count_ops_members();
+            int hashmap_size = size();
+            assert hashmap_size == static_members : "TokensGroup size mismatches: " + hashmap_size + " != "
+                    + static_members;
+        }
+    };
+    static final HashMap<String, Operator> ops_map = new HashMap<>() {
+        {
+            put(AND[0], Operator.AND);
+            put(AND[1], Operator.AND);
+            put(OR[0], Operator.OR);
+            put(NOT[0], Operator.NOT);
+            put(NOT[1], Operator.NOT);
+            put(IMPLICATES[0], Operator.IMPLICATES);
+            put(XAND[0], Operator.XAND);
+            int static_members = count_ops_members();
             int hashmap_size = size();
             assert hashmap_size == static_members : "TokensGroup size mismatches: " + hashmap_size + " != "
                     + static_members;
         }
     };
 
-    static int count_members() {
-        return AND.length + OR.length + NOT.length + IMPLICATES.length + XAND.length /* + DELIMITER.length * 2 */;
+    /**
+     * Revisa si la subcadena es parte de algún token multi-caracter definido.
+     * 
+     * @param substring
+     * @return Devuelve la cadena que empieza con {@code substring}, i.e.
+     *         {@code "hola".startsWith("ho") -> "hola"}
+     *         <ul>
+     *         <li>{@code Result.error(n)} si hay más de `una` coincidencia</li>
+     *         <li>{@code Result.ok(Optional.empty())} si no hay coincidencias</li>
+     *         <li>{@code Result.ok(Optional.of(s))} si hay una coincidencia</li>
+     *         </ul>
+     */
+    static Result<Optional<String>, Integer> string_from_substring(final String substring) {
+
+        java.util.ArrayList<String> matches = new java.util.ArrayList<>();
+        if (IMPLICATES[0].startsWith(substring))
+            matches.add(IMPLICATES[0]);
+        if (XAND[0].startsWith(substring)) {
+            matches.add(XAND[0]);
+        }
+        switch (matches.size()) {
+            case 0 -> {
+                return Result.ok(Optional.empty());
+            }
+            case 1 -> {
+                return Result.ok(Optional.of(matches.get(0)));
+            }
+            default -> {
+                return Result.error(matches.size());
+            }
+        }
     }
 
+    static int count_ops_members() {
+        return AND.length + OR.length + NOT.length + IMPLICATES.length + XAND.length + IDENT.length /*
+                                                                                                     * +
+                                                                                                     * DELIMITER.length
+                                                                                                     * * 2
+                                                                                                     */;
+    }
+
+    static final String[] IDENT = { "p", "q", "r" };
     static final String[] AND = { "&", "^" };
     static final String[] OR = { "|" };
     static final String[] NOT = { "~", "¬" };
