@@ -8,7 +8,7 @@ import com.utp.clsEstructuraDatos.pry3.Tokens.Token;
 //  * los operadores de negación, inclusión, disyunción, condicional,
 //  * y bicondicional. Considere un máximo de 3 variables (p, q, r).   
 //  * 
-//  * El programa no será interac4tivo en la entrada, ya que deberá 
+//  * El programa no será interactivo en la entrada, ya que deberá 
 //  * indicar la expresión lógica a evaluar mediante código. 
 import com.utp.clsEstructuraDatos.pry3.Tokens.TokenStream;
 
@@ -32,11 +32,4 @@ public class Main {
 
     }
 
-}
-
-class Expression {
-    public Expression(Optional<Token.OPEN_PAREN> paren_o, Expression exp_1, Operator op, Optional<Expression> exp_2,
-            Optional<Token.CLOSE_PAREN> paren_c) {
-
-    }
 }
