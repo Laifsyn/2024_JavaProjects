@@ -28,12 +28,18 @@ public class TokenStream {
             return Optional.empty();
         }
         // Avanza el puntero por cada espacio en blanco que el puntero esté apuntando.
-        while (pointer < inner_string.length() && Character.isWhitespace(inner_string.charAt(pointer))) {
-            pointer++;
+        if (Character.isWhitespace(inner_string.charAt(pointer))) {
+            int offset = 0;
+            while ((pointer + offset) < inner_string.length()
+                    && Character.isWhitespace(inner_string.charAt(pointer + offset))) {
+                offset++;
+            }
+            Token ret = Token.from_string(inner_string.substring(pointer, pointer + offset));
+            pointer += offset;
+            return Optional.of(ret);
         }
-
-        Token result = Token.fromString(this.inner_string.substring(pointer, pointer + next_offset));
-
+        var arg = this.inner_string.substring(pointer, pointer + next_offset);
+        Token result = Token.from_string(arg);
         switch (result) {
             case Token.EMPTY() -> {
                 next_offset = 1;
@@ -105,6 +111,7 @@ public class TokenStream {
             }
             case Token.UNEXPECTED(String substring) -> {
                 next_offset = 1;
+                pointer += substring.length();
                 // don't advance the pointer
                 return Optional.of(result);
             }

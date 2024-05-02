@@ -55,11 +55,13 @@ public enum Operator {
 
     public boolean eval(boolean rhs, Optional<Boolean> maybe_lhs) {
         boolean lhs = false;
-        if (this != Operator.OR) {
-            if (maybe_lhs.isEmpty())
-                throw new IllegalArgumentException("No second input was provided when Operator was " + this);
+        if (this != Operator.NOT && maybe_lhs.isEmpty()) {
+            throw new IllegalArgumentException("No second input was provided when Operator was " + this);
+        }
+        if (maybe_lhs.isPresent()) {
             lhs = maybe_lhs.get();
         }
+
         boolean op = switch (this) {
             case AND -> (rhs && lhs);
             case OR -> (rhs || lhs);

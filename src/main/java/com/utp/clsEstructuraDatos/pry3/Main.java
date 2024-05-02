@@ -14,13 +14,29 @@ import com.utp.clsEstructuraDatos.pry3.Tokens.TokenStream;
 
 public class Main {
     public static void main(String[] args) {
-        // Result<TokenStream, IllegalArgumentException> stream = TokenStream.from_string("pqr(^^&&()|||)");
-        var stream = TokenStream.from_string("pqr(^^&&()|||)").unwrapOk();
+        // Result<TokenStream, IllegalArgumentException> stream =
+        // TokenStream.from_string("pqr(^^&&()|||)");
+        String input = "pqr(^^-><<->~!&&  ()   | ||)   ![((p<->((q^q)^r))->q)^~p]";
+        System.out.println(input);
+        TokenStream stream = TokenStream.from_string(input).unwrapOk();
         Optional<Token> token = stream.next();
         while (token.isPresent()) {
-            System.out.println(token.get());
+            if (token.get() instanceof Token.BLANKSPACE(int _ignored))
+                continue;
+            if (token.get() instanceof Token.UNEXPECTED(String _ignored)){
+                System.out.println(token.get().to_token_name());
+                break;}
+            System.out.println(token.get().to_token_name());
             token = stream.next();
         }
+
     }
 
+}
+
+class Expression {
+    public Expression(Optional<Token.OPEN_PAREN> paren_o, Expression exp_1, Operator op, Optional<Expression> exp_2,
+            Optional<Token.CLOSE_PAREN> paren_c) {
+
+    }
 }
