@@ -112,7 +112,6 @@ public class TokenStream {
             case Token.UNEXPECTED(String substring) -> {
                 next_offset = 1;
                 pointer += substring.length();
-                // don't advance the pointer
                 return Optional.of(result);
             }
             case Token.EOL(String substring) -> {
