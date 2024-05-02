@@ -23,7 +23,7 @@ public class TokenStream {
 
     int next_offset = 1;
 
-    Optional<Token> next() {
+    public Optional<Token> next() {
         if (pointer >= inner_string.length()) {
             return Optional.empty();
         }

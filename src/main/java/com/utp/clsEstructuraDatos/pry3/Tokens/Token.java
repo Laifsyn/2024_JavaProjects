@@ -168,8 +168,17 @@ public sealed interface Token {
 
 class TokensGroup {
     static final int MAX_CHARS = 3;
+    static final String[] IDENT = { "p", "q", "r" };
+    static final String[] AND = { "&", "^" };
+    static final String[] OR = { "|" };
+    static final String[] NOT = { "~", "¬" };
+    static final String[] IMPLICATES = { "->" };
+    static final String[] XAND = { "<->" };
+    static final String[][] DELIMITER = { { "(", ")" } };
+
     static final HashMap<String, Token> tokens_map = new HashMap<String, Token>() {
         {
+            System.out.println(IDENT.toString());
             put(IDENT[0], new Token.IDENTIFIER(IDENT[0]));
             put(IDENT[1], new Token.IDENTIFIER(IDENT[1]));
             put(IDENT[2], new Token.IDENTIFIER(IDENT[2]));
@@ -249,12 +258,4 @@ class TokensGroup {
                                                                                                      * * 2
                                                                                                      */;
     }
-
-    static final String[] IDENT = { "p", "q", "r" };
-    static final String[] AND = { "&", "^" };
-    static final String[] OR = { "|" };
-    static final String[] NOT = { "~", "¬" };
-    static final String[] IMPLICATES = { "->" };
-    static final String[] XAND = { "<->" };
-    static final String[][] DELIMITER = { { "(", ")" } };
 }
