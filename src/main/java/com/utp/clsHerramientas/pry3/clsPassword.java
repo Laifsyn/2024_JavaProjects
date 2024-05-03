@@ -3,12 +3,13 @@ package com.utp.clsHerramientas.pry3;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
+import com.utp.clsHerramientas.pry3.APIError.OperacionCancelada;
 import com.utp.utils.Result;
 
 public class clsPassword {
     public static void main(String[] args) {
         clsPassword user_login = get_user();
-        Result<char[], APIError> input;
+        Result<char[], OperacionCancelada> input;
         while (true) {
             input = user_login.read_password();
             if (input.isError()) {
@@ -49,7 +50,7 @@ public class clsPassword {
         this.usuario = usuario;
     }
 
-    public Result<char[], APIError> read_password() {
+    public Result<char[], APIError.OperacionCancelada> read_password() {
 
         JPasswordField objLeerPassword = new JPasswordField();
         if (JOptionPane.showConfirmDialog(null, new Object[] { this.usuario, "Ingrese su contraseña", objLeerPassword },
@@ -83,32 +84,7 @@ public class clsPassword {
         return ret;
     }
 
-    int intentos() {
+    public int intentos() {
         return this.intentos;
-    }
-}
-
-sealed interface APIError {
-    String getMessage();
-
-    record OperacionCancelada() implements APIError {
-        @Override
-        public String getMessage() {
-            return "Operación cancelada";
-        }
-    }
-
-    record IntentoAgotado() implements APIError {
-        @Override
-        public String getMessage() {
-            return "Agotó los intentos de acceso";
-        }
-    }
-
-    record ContraseñaIncorrecta() implements APIError {
-        @Override
-        public String getMessage() {
-            return "Contraseña incorrecta";
-        }
     }
 }
