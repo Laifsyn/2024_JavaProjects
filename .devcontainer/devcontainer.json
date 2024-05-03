@@ -62,7 +62,7 @@
 				"ms-vsliveshare.vsliveshare",
 				"redhat.java",
 				"zhuangtongfa.material-theme",
-				"shengchen.vscode-checkstyle",
+				// "shengchen.vscode-checkstyle",
 				// "SonarSource.sonarlint-vscode",
 				"GitHub.copilot"
 			]
