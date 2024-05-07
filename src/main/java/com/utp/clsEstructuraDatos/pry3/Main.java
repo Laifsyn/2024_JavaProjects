@@ -1,5 +1,6 @@
 package com.utp.clsEstructuraDatos.pry3;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import com.utp.clsEstructuraDatos.pry3.Tokens.Token;
@@ -23,9 +24,10 @@ public class Main {
         while (token.isPresent()) {
             if (token.get() instanceof Token.BLANKSPACE(int _ignored))
                 continue;
-            if (token.get() instanceof Token.UNEXPECTED(String _ignored)){
+            if (token.get() instanceof Token.UNEXPECTED(String _ignored)) {
                 System.out.println(token.get().to_token_name());
-                break;}
+                break;
+            }
             System.out.println(token.get().to_token_name());
             token = stream.next();
         }

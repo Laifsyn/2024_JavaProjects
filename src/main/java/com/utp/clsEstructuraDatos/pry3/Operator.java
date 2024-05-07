@@ -48,7 +48,7 @@ public enum Operator {
         };
         return ops;
     }
-
+// Operator Overloading
     public static boolean eval(boolean lhs, Operator op, Optional<Boolean> rhs) {
         return op.eval(lhs, rhs);
     }
