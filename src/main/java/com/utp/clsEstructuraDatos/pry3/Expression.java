@@ -47,9 +47,9 @@ public sealed interface Expression {
         Token last_operator_token = new Token.EMPTY();
         while (optional_token.isPresent()) {
             Token token = optional_token.get();
-            System.out.println(stream.position() + ", " + nest_level + ")DEBUG: " +
-                    exp_builder.class_name() + " - " +
-                    token.to_token_name());
+            // System.out.println(stream.position() + ", " + nest_level + ")DEBUG: " +
+            //         exp_builder.class_name() + " - " +
+            //         token.to_token_name());
             // Early return for errors
             switch (token) {
                 case Token.BLANKSPACE ignored -> {
