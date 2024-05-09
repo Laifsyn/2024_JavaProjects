@@ -44,13 +44,12 @@ public sealed interface Expression {
         Optional<Token> optional_token = stream.next();
         // Expression exp = null;
         ExpressionBuilder exp_builder = new ExpressionBuilder.EMPTY();
-        Token last_token = new Token.EMPTY();
+        Token last_operator_token = new Token.EMPTY();
         while (optional_token.isPresent()) {
             Token token = optional_token.get();
-            // System.out
-            // .println(stream.position() + ", " + nest_level + ")DEBUG: " +
-            // exp_builder.class_name() + " - " +
-            // token.to_token_name());
+            System.out.println(stream.position() + ", " + nest_level + ")DEBUG: " +
+                    exp_builder.class_name() + " - " +
+                    token.to_token_name());
             // Early return for errors
             switch (token) {
                 case Token.BLANKSPACE ignored -> {
@@ -113,9 +112,10 @@ public sealed interface Expression {
                     return next_exp;
                 }
                 var next_expression = next_exp.get().unwrapOk();
-                // if (last_token instanceof Token.NOT) {
-                // next_expression = new Expression.NEGATING(next_expression);
-                // }
+                if (last_operator_token instanceof Token.NOT
+                        && exp_builder instanceof ExpressionBuilder.IntoLR_Expression) {
+                    next_expression = new Expression.NEGATING(next_expression);
+                }
                 var insert_result = try_insert_exp(exp_builder, next_expression);
                 if (insert_result.isError()) {
                     return Optional.of(Result.error(insert_result.unwrapError()));
@@ -165,7 +165,8 @@ public sealed interface Expression {
             } else if (token instanceof Token.IDENTIFIER(String identfier)) {
                 // Inserta expresión de IDENTIFIER
                 Expression insert_exp = new Expression.IDENTIFIER(identfier);
-                if (last_token instanceof Token.NOT && exp_builder instanceof ExpressionBuilder.IntoLR_Expression) {
+                if (last_operator_token instanceof Token.NOT
+                        && exp_builder instanceof ExpressionBuilder.IntoLR_Expression) {
                     insert_exp = new Expression.NEGATING(insert_exp);
                 }
                 var insert_result = try_insert_exp(exp_builder, insert_exp);
@@ -174,7 +175,9 @@ public sealed interface Expression {
                 }
                 exp_builder = insert_result.unwrapOk();
             }
-            last_token = token;
+            if (token.is_operator()) {
+                last_operator_token = token;
+            }
             optional_token = stream.next();
         }
         // System.out.println("Debug, Returning a: " + exp_builder.class_name());
