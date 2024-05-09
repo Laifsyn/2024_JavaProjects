@@ -23,6 +23,8 @@ public class Main {
                 "p&q",
                 "(p&q)^r|(p^q)",
                 "(!(p->q) ->~q)&p",
+                "(!p->q ->~q)&p",
+                "(!(!p->!q) ->~q)&p",
 
         };
 

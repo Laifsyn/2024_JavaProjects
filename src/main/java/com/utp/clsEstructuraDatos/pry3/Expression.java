@@ -165,7 +165,7 @@ public sealed interface Expression {
             } else if (token instanceof Token.IDENTIFIER(String identfier)) {
                 // Inserta expresión de IDENTIFIER
                 Expression insert_exp = new Expression.IDENTIFIER(identfier);
-                if (last_token instanceof Token.NOT) {
+                if (last_token instanceof Token.NOT && exp_builder instanceof ExpressionBuilder.IntoLR_Expression) {
                     insert_exp = new Expression.NEGATING(insert_exp);
                 }
                 var insert_result = try_insert_exp(exp_builder, insert_exp);
