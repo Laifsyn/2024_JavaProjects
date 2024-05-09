@@ -21,6 +21,7 @@ public class Main {
         String[] input = new String[] {
                 "p|q",
                 "p&q",
+                "(p&q)^r|(p^q)",
                 "(!(p->q) ->~q)&p",
 
         };
@@ -38,7 +39,7 @@ public class Main {
                 System.err.println("Evaluating: " + expression.unwrapOk().display());
             }
 
-            System.err.println("\n\n");
+            System.err.println("\n<====================================>");
         }
 
     }
