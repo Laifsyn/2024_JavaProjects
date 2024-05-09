@@ -130,4 +130,7 @@ public class TokenStream {
 
     }
 
+    public int position() {
+        return this.pointer;
+    }
 }

@@ -71,5 +71,15 @@ public enum Operator {
         };
         return op;
     }
+    
+    public String display(){
+        return switch (this) {
+            case AND -> "∧";
+            case OR -> "∨";
+            case NOT -> "¬";
+            case IMPLICATES -> "→";
+            case XAND -> "⇔";
+        };
+    }
 
 }

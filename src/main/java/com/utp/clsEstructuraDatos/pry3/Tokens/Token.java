@@ -62,6 +62,25 @@ public sealed interface Token {
         }
     }
 
+    default boolean is_operator() {
+        switch (this) {
+            case Token.AND ignored -> {
+            }
+            case Token.OR ignored -> {
+            }
+            case Token.NOT ignored -> {
+            }
+            case Token.IMPLICATES ignored -> {
+            }
+            case Token.XAND ignored -> {
+            }
+            default -> {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public String toString();
 
     public String to_token_name();
@@ -261,7 +280,7 @@ class TokensGroup {
     static final String[] IDENT = { "p", "q", "r" };
     static final String[] AND = { "&", "^" };
     static final String[] OR = { "|" };
-    static final String[] NOT = { "~", "¬" };
+    static final String[] NOT = { "~", "¬", "!" };
     static final String[] IMPLICATES = { "->" };
     static final String[] XAND = { "<->" };
     static final String[][] DELIMITER = { { "(", ")" } };
@@ -277,6 +296,7 @@ class TokensGroup {
             put(OR[0], new Token.OR(OR[0]));
             put(NOT[0], new Token.NOT(NOT[0]));
             put(NOT[1], new Token.NOT(NOT[1]));
+            put(NOT[2], new Token.NOT(NOT[2]));
             put(IMPLICATES[0], new Token.IMPLICATES(IMPLICATES[0]));
             put(XAND[0], new Token.XAND(XAND[0]));
             put(DELIMITER[0][0], new Token.OPEN_PAREN(DELIMITER[0][0].charAt(0)));

@@ -12,24 +12,33 @@ import com.utp.clsEstructuraDatos.pry3.Tokens.Token;
 //  * El programa no será interactivo en la entrada, ya que deberá 
 //  * indicar la expresión lógica a evaluar mediante código. 
 import com.utp.clsEstructuraDatos.pry3.Tokens.TokenStream;
+import com.utp.utils.Result;
 
 public class Main {
     public static void main(String[] args) {
         // Result<TokenStream, IllegalArgumentException> stream =
         // TokenStream.from_string("pqr(^^&&()|||)");
-        String input = "pqr(^^-><<->~!&&  ()   | ||)   ![((p<->((q^q)^r))->q)^~p]";
-        System.out.println(input);
-        TokenStream stream = TokenStream.from_string(input).unwrapOk();
-        Optional<Token> token = stream.next();
-        while (token.isPresent()) {
-            if (token.get() instanceof Token.BLANKSPACE(int _ignored))
-                continue;
-            if (token.get() instanceof Token.UNEXPECTED(String _ignored)) {
-                System.out.println(token.get().to_token_name());
-                break;
+        String[] input = new String[] {
+                "p|q",
+                "p&q",
+                "(!(p->q) ->~q)&p",
+
+        };
+
+        for (String string : input) {
+            System.out.println("Evaluating: `" + string + "`");
+            TokenStream stream = TokenStream.from_string(string).unwrapOk();
+            Result<Expression, String> expression = Expression.try_from_stream(stream);
+            if (expression.isError()) {
+                System.err.println("Error: " + expression.unwrapError());
+                System.err.println("Stream: " + stream.position());
+                System.err.println("Stream: " + stream.next().orElseGet(() -> new Token.EOL("asdasd")).to_token_name());
+            } else {
+                System.out.println("Exito!!");
+                System.err.println("Evaluating: " + expression.unwrapOk().display());
             }
-            System.out.println(token.get().to_token_name());
-            token = stream.next();
+
+            System.err.println("\n\n");
         }
 
     }
