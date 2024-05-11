@@ -287,7 +287,6 @@ class TokensGroup {
 
     static final HashMap<String, Token> tokens_map = new HashMap<String, Token>() {
         {
-            System.out.println(IDENT.toString());
             put(IDENT[0], new Token.IDENTIFIER(IDENT[0]));
             put(IDENT[1], new Token.IDENTIFIER(IDENT[1]));
             put(IDENT[2], new Token.IDENTIFIER(IDENT[2]));

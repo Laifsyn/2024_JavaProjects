@@ -1,7 +1,8 @@
 package com.utp.clsEstructuraDatos.pry3;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Optional;
 
 import com.utp.clsEstructuraDatos.pry3.Tokens.Token;
@@ -12,6 +13,16 @@ public sealed interface Expression {
     boolean eval(HashMap<String, Boolean> boolean_map);
 
     String display();
+
+    HashSet<String> get_identifiers();
+
+    /**
+     * Se usa un LinkedHashMap para conservar orden de insercion. Los
+     * identificadores tenderan a ser los primeros en ser encontrados en este mapa.
+     * 
+     * Se guarda en la entrada la direccion de la expresion que se crea.
+     */
+    LinkedHashMap<String, Expression> get_expressions(LinkedHashMap<String, Expression> expressions);
 
     /**
      * Retorna al primer error encontrado. Posiblemente con un util mensaje de error
@@ -27,7 +38,7 @@ public sealed interface Expression {
         return Result.ok(expression.get().unwrapOk());
     }
 
-    static Optional<Result<Expression, String>> try_next_expression(TokenStream stream, final int nest_level) {
+    private static Optional<Result<Expression, String>> try_next_expression(TokenStream stream, final int nest_level) {
 
         /**
          * Sintaxis de las expresiones:
@@ -48,8 +59,8 @@ public sealed interface Expression {
         while (optional_token.isPresent()) {
             Token token = optional_token.get();
             // System.out.println(stream.position() + ", " + nest_level + ")DEBUG: " +
-            //         exp_builder.class_name() + " - " +
-            //         token.to_token_name());
+            // exp_builder.class_name() + " - " +
+            // token.to_token_name());
             // Early return for errors
             switch (token) {
                 case Token.BLANKSPACE ignored -> {
@@ -207,7 +218,7 @@ public sealed interface Expression {
      * Avanza el Constructor, de lo contrario, devuelve un error relacionado a que
      * en esta etapa no espera recibir expresión
      */
-    static Result<ExpressionBuilder, String> try_insert_exp(ExpressionBuilder exp_builder,
+    private static Result<ExpressionBuilder, String> try_insert_exp(ExpressionBuilder exp_builder,
             Expression exp) {
         switch (exp_builder) {
             case ExpressionBuilder.EMPTY ignored -> {
@@ -233,7 +244,6 @@ public sealed interface Expression {
 
     record IDENTIFIER(String ident) implements Expression {
         @Override
-
         public boolean eval(HashMap<String, Boolean> boolean_map) {
             Boolean answer = boolean_map.get(ident);
             if (answer == null) {
@@ -244,6 +254,19 @@ public sealed interface Expression {
 
         public String display() {
             return ident;
+        }
+
+        @Override
+        public HashSet<String> get_identifiers() {
+            var idents = new HashSet<String>();
+            idents.add(this.ident);
+            return idents;
+        }
+
+        @Override
+        public LinkedHashMap<String, Expression> get_expressions(LinkedHashMap<String, Expression> expressions) {
+            expressions.putIfAbsent(this.display(), this);
+            return expressions;
         }
 
     }
@@ -263,6 +286,17 @@ public sealed interface Expression {
             return sb.toString();
         }
 
+        @Override
+        public HashSet<String> get_identifiers() {
+            return exp.get_identifiers();
+        }
+
+        @Override
+        public LinkedHashMap<String, Expression> get_expressions(LinkedHashMap<String, Expression> expressions) {
+            this.exp.get_expressions(expressions);
+            expressions.putIfAbsent(this.display(), this);
+            return expressions;
+        }
     }
 
     record LR_EXPRESSION(Expression lhs, Operator op, Expression rhs) implements Expression {
@@ -279,6 +313,21 @@ public sealed interface Expression {
             sb.append(op.display());
             append_expression(sb, rhs);
             return sb.toString();
+        }
+
+        @Override
+        public HashSet<String> get_identifiers() {
+            var idents = lhs.get_identifiers();
+            idents.addAll(rhs.get_identifiers());
+            return idents;
+        }
+
+        @Override
+        public LinkedHashMap<String, Expression> get_expressions(LinkedHashMap<String, Expression> expressions) {
+            lhs.get_expressions(expressions);
+            rhs.get_expressions(expressions);
+            expressions.putIfAbsent(this.display(), this);
+            return expressions;
         }
 
     }
