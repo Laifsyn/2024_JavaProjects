@@ -62,15 +62,21 @@ public class DrawTable {
         System.err.println("Despues: " + ancho_columna.toString());
 
         System.out.println("Tabla de verdad");
-        for (String[] fila : mi_tabla) {
-            for (int i = 0; i < fila.length; i++) {
-
+        for (int j = 0; j < mi_tabla.length; j++) {
+            for (int i = 0; i < mi_tabla[j].length; i++) {
                 // Por defecto
-                System.out.print(String.format("|%" + ancho_columna.get(i) + "s|", fila[i]));
-
+                System.out.print(String.format("|%" + ancho_columna.get(i) + "s|", mi_tabla[j][i]));
             }
             System.out.println();
+           
+            if (j == 0) {
+                for (int k = 0; k < mi_tabla[0].length; k++) {
+                    System.out.print("|" + "=".repeat(ancho_columna.get(k)) + "|");
+                }
+                System.out.println();
+            }
         }
         System.exit(0);
     }
 }
+    
