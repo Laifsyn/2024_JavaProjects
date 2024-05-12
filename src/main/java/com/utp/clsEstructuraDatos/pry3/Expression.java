@@ -1,8 +1,10 @@
 package com.utp.clsEstructuraDatos.pry3;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.Map.Entry;
 import java.util.Optional;
 
 import com.utp.clsEstructuraDatos.pry3.Tokens.Token;
@@ -22,7 +24,58 @@ public sealed interface Expression {
      * 
      * Se guarda en la entrada la direccion de la expresion que se crea.
      */
-    LinkedHashMap<String, Expression> get_expressions(LinkedHashMap<String, Expression> expressions);
+    public void load_expressions(LinkedHashMap<String, Expression> expressions);
+
+    default String as_printable_table() {
+        HashSet<String> identificadores = this.get_identifiers();
+        // Cargamos primero los identificadores del mapa de valores, y la lista de
+        // expresiones
+        LinkedHashMap<String, Expression> expressions = new LinkedHashMap<String, Expression>();
+        HashMap<String, Boolean> lista_de_variables = new HashMap<>();
+        for (String ident : identificadores) {
+            expressions.put(ident, null);
+            lista_de_variables.put(ident, false);
+        }
+        // Cargamos el resto de las expresiones
+        this.load_expressions(expressions);
+
+        ArrayList<String> fila = new ArrayList<>();
+        for (String expression_as_string : expressions.keySet()) {
+            fila.add(expression_as_string);
+        }
+        // Clonamos a un encabezado como constante porque lo vamos a usar para lectura
+        // solamente
+        final String[] encabezado = fila.toArray(new String[] {});
+
+        DrawTable tabla = new DrawTable();
+        tabla.insertar_fila(encabezado);
+
+        // Calculamos los posibles estados de la combinacion de variables
+        int states = (int) Math.round(Math.pow(2, identificadores.size()));
+        // fila_n es la fila del contenido
+        for (int fila_n = 0; fila_n < states; fila_n++) {
+            // Quiero asegurarme que estoy trabajando con fila vacia.
+            fila.clear();
+
+            // Cargamos los valores de las variables usando bit shifting.
+            int estado_de_variables = fila_n;
+            for (Entry<String, Boolean> entry : lista_de_variables.entrySet()) {
+                entry.setValue(((estado_de_variables & 1) == 1));
+                estado_de_variables = estado_de_variables >> 1;
+            }
+            // Ya se puede empezar a llenar las filas
+            for (String expresion_a_evaluar : encabezado) {
+                Expression exp = expressions.get(expresion_a_evaluar);
+                if (exp == null) {
+                    fila.add("null");
+                } else {
+                    fila.add(exp.eval(lista_de_variables) ? "1" : "0");
+                }
+            }
+            tabla.insertar_fila(fila.toArray(new String[] {}));
+        }
+        return tabla.toString();
+    }
 
     /**
      * Retorna al primer error encontrado. Posiblemente con un util mensaje de error
@@ -264,9 +317,8 @@ public sealed interface Expression {
         }
 
         @Override
-        public LinkedHashMap<String, Expression> get_expressions(LinkedHashMap<String, Expression> expressions) {
+        public void load_expressions(LinkedHashMap<String, Expression> expressions) {
             expressions.putIfAbsent(this.display(), this);
-            return expressions;
         }
 
     }
@@ -292,10 +344,9 @@ public sealed interface Expression {
         }
 
         @Override
-        public LinkedHashMap<String, Expression> get_expressions(LinkedHashMap<String, Expression> expressions) {
-            this.exp.get_expressions(expressions);
+        public void load_expressions(LinkedHashMap<String, Expression> expressions) {
+            this.exp.load_expressions(expressions);
             expressions.putIfAbsent(this.display(), this);
-            return expressions;
         }
     }
 
@@ -323,11 +374,10 @@ public sealed interface Expression {
         }
 
         @Override
-        public LinkedHashMap<String, Expression> get_expressions(LinkedHashMap<String, Expression> expressions) {
-            lhs.get_expressions(expressions);
-            rhs.get_expressions(expressions);
+        public void load_expressions(LinkedHashMap<String, Expression> expressions) {
+            lhs.load_expressions(expressions);
+            rhs.load_expressions(expressions);
             expressions.putIfAbsent(this.display(), this);
-            return expressions;
         }
 
     }

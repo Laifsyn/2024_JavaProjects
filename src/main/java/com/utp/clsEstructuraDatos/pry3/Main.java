@@ -1,9 +1,5 @@
 package com.utp.clsEstructuraDatos.pry3;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map.Entry;
-
 import com.utp.clsEstructuraDatos.pry3.Tokens.Token;
 import com.utp.clsEstructuraDatos.pry3.Tokens.TokenStream;
 import com.utp.utils.Result;
@@ -17,46 +13,29 @@ import com.utp.utils.Result;
 //  * indicar la expresión lógica a evaluar mediante código. 
 public class Main {
     public static void main(String[] args) {
-        // Result<TokenStream, IllegalArgumentException> stream =
-        // TokenStream.from_string("pqr(^^&&()|||)");
-        String[] input = new String[] {
+        String[] entries = new String[] {
                 "p|q",
-                "p&q",
+                "p|q&r",
                 "(p&q)^r|(p^q)",
-                "(!(p->q) ->~q)&p",
-                "(!p->q ->~q)&p",
-                "(!(!p->!q) ->!(!q^!(p->q)))&!p",
-
+                "((p->~q)^(r^(q->p))->~r"
         };
+        int entry_no = 0;
+        for (String input : entries) {
+            entry_no++;
+            System.out.println(entry_no + "-)Evaluating: `" + input + "`");
 
-        for (String string : input) {
-            System.out.println("Evaluating: `" + string + "`");
-            TokenStream stream = TokenStream.from_string(string).unwrapOk();
+            // Convertir la Cadena a un productor de Token
+            TokenStream stream = TokenStream.from_string(input).unwrapOk();
             Result<Expression, String> expression = Expression.try_from_stream(stream);
+            // La cadena de Tokens tiene la posibilidad de no ser una expresión válida.
             if (expression.isError()) {
                 System.err.println("Error: " + expression.unwrapError());
                 System.err.println("Stream: " + stream.position());
-                System.err.println("Stream: " + stream.next().orElseGet(() -> new Token.EOL("asdasd")).to_token_name());
-            } else {
-                System.out.println("Exito!!");
-                System.err.println("Evaluating: " + expression.unwrapOk().display());
-                var confirmed_expression = expression.unwrapOk();
-                var linked_list = new LinkedHashMap<String, Expression>();
-                HashMap<String, Boolean> ident_entries = new HashMap<>();
-                for (String ident : confirmed_expression.get_identifiers()) {
-                    linked_list.put(ident, null);
-                    ident_entries.put(ident, false);
-                }
-                int number = 0;
-                for (Entry<String, Expression> entry_set : confirmed_expression
-                        .get_expressions(linked_list).entrySet()) {
-                    number++;
-                    System.out.printf("%2d-)%-5s <= %s\n", number,
-                            entry_set.getValue().eval(ident_entries), entry_set.getKey());
-                }
+                System.err.println("Stream: " + stream.next().orElseGet(() -> new Token.EOL("")).to_token_name());
+                continue;
             }
-
-            System.err.println("\n<====================================>");
+            var valid_exp = expression.unwrapOk();
+            System.out.println("Tabla de Verdad:\n" + valid_exp.as_printable_table());
         }
 
     }

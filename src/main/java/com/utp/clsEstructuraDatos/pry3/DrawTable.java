@@ -23,14 +23,10 @@ public class DrawTable {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        // Iniciamos en 1 para acontar el borde izquierdo de la tabla
-        int max_width = 1;
         // Guardo la posicion de los vertices de la tabla.
         Integer[] columns_widths = new Integer[this.cantidad_columnas];
 
-        // Obtener espacio total para dibujo antes de empezar a dibujar la tabla, y
-        // tambien obtener los vertices de la tabla
-
+        // Obtener los vertices de la tabla
         for (int indice_columna = 0; indice_columna < this.cantidad_columnas; indice_columna++) {
             int ancho_columna = 0;
             for (String[] fila : this.table) {
@@ -41,7 +37,6 @@ public class DrawTable {
                     columns_widths[indice_columna] = ancho_columna;
                 }
             }
-            max_width += ancho_columna;
         }
 
         StringBuilder borde_superior = new StringBuilder("┌");
@@ -85,12 +80,6 @@ public class DrawTable {
         return sb.toString();
     }
 
-    /*
-     * |__|| asdfa||c|
-     * ------------------------
-     * | 1||23jgadsdsavghgh||3|
-     * | 4|| 5||6|
-     */
     public static void main(String[] args) {
 
         String[][] mi_tabla = new String[][] { { "Hola mundo", "asdfa", "Nostradamus" },
