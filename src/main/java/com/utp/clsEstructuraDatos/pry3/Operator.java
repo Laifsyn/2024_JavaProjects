@@ -48,37 +48,38 @@ public enum Operator {
         };
         return ops;
     }
-// Operator Overloading
+
+    // Operator Overloading
     public static boolean eval(boolean lhs, Operator op, Optional<Boolean> rhs) {
         return op.eval(lhs, rhs);
     }
 
-    public boolean eval(boolean rhs, Optional<Boolean> maybe_lhs) {
-        boolean lhs = false;
-        if (this != Operator.NOT && maybe_lhs.isEmpty()) {
+    public boolean eval(boolean lhs, Optional<Boolean> maybe_rhs) {
+        boolean rhs = false;
+        if (this != Operator.NOT && maybe_rhs.isEmpty()) {
             throw new IllegalArgumentException("No second input was provided when Operator was " + this);
         }
-        if (maybe_lhs.isPresent()) {
-            lhs = maybe_lhs.get();
+        if (maybe_rhs.isPresent()) {
+            rhs = maybe_rhs.get();
         }
 
         boolean op = switch (this) {
-            case AND -> (rhs && lhs);
-            case OR -> (rhs || lhs);
-            case NOT -> (!rhs);
-            case IMPLICATES -> (!lhs || rhs);
-            case XAND -> (rhs == lhs);
+            case AND -> (lhs & rhs);
+            case OR -> (lhs | rhs);
+            case NOT -> (!lhs);
+            case IMPLICATES -> (!lhs | rhs);
+            case XAND -> (lhs == rhs);
         };
         return op;
     }
-    
-    public String display(){
+
+    public String display() {
         return switch (this) {
-            case AND -> "∧";
-            case OR -> "∨";
-            case NOT -> "¬";
-            case IMPLICATES -> "→";
-            case XAND -> "⇔";
+            case AND -> "&";
+            case OR -> "|";
+            case NOT -> "!";
+            case IMPLICATES -> "->";
+            case XAND -> "<->";
         };
     }
 

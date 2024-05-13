@@ -53,12 +53,18 @@ public sealed interface Expression {
         // Calculamos los posibles estados de la combinacion de variables
         int states = (int) Math.round(Math.pow(2, identificadores.size()));
         // fila_n es la fila del contenido
-        for (int fila_n = 0; fila_n < states; fila_n++) {
+        for (int fila_n = states - 1; fila_n >= 0; fila_n--) {
             // Quiero asegurarme que estoy trabajando con fila vacia.
             fila.clear();
 
             // Cargamos los valores de las variables usando bit shifting.
-            int estado_de_variables = fila_n;
+            int estado_de_variables = 0;
+            // Invertimos el orden de los bits a LE
+            // i.e. Si ultimos 3 bits de fila_n == 110, entonces estado_de_variables == 011
+            for (int i = 0; i < identificadores.size(); i++) {
+                estado_de_variables = estado_de_variables << 1;
+                estado_de_variables = estado_de_variables | ((fila_n >> i) & 1);
+            }
             for (Entry<String, Boolean> entry : lista_de_variables.entrySet()) {
                 entry.setValue(((estado_de_variables & 1) == 1));
                 estado_de_variables = estado_de_variables >> 1;
@@ -354,6 +360,13 @@ public sealed interface Expression {
 
         @Override
         public boolean eval(HashMap<String, Boolean> boolean_map) {
+            // if (op == Operator.IMPLICATES) {
+            //     System.out.println(boolean_map);
+            //     System.out.println(lhs + " " + op + " " + rhs + "_______");
+            //     System.out.println(lhs.eval(boolean_map) + " " + op + " "
+            //              + rhs.eval(boolean_map) + " = "
+            //              + op.eval(lhs.eval(boolean_map), Optional.of(rhs.eval(boolean_map))) + "\n");
+            // }
             return op.eval(lhs.eval(boolean_map), Optional.of(rhs.eval(boolean_map)));
         }
 
