@@ -29,27 +29,26 @@ class App {
         frame.setVisible(true);
     }
 
-    void add_button_commands(JFrame frame) {
-        JButton create_stack = new JButton("Crear Pila");
-        JButton push = new JButton("Insertar");
-        JButton pop = new JButton("Quitar");
-        JButton is_empty = new JButton("Pila vacia?");
-        JButton is_full = new JButton("Pila llena?");
-        JButton clear = new JButton("Limpiar Pila");
-        JButton peek = new JButton("Ver Cima");
-        JButton display = new JButton("Imprimir Pila");
-        // Insertar los botones creados al arreglo
-        // this.botones.add(create_stack);
-        // this.botones.add(push);
-        // this.botones.add(pop);
-        // this.botones.add(is_empty);
-        // this.botones.add(is_full);
-        // this.botones.add(clear);
-        // this.botones.add(peek);
-        // this.botones.add(display);
+    JButton create_stack = new JButton("Crear Pila");
+    JButton push = new JButton("Insertar");
+    JButton pop = new JButton("Quitar");
+    JButton is_empty = new JButton("Pila vacia?");
+    JButton is_full = new JButton("Pila llena?");
+    JButton clear = new JButton("Limpiar Pila");
+    JButton peek = new JButton("Ver Cima");
+    JButton display = new JButton("Imprimir Pila");
 
-        
-        create_stack.addActionListener(e -> {
+    void add_button_commands(JFrame frame) {
+        // Deshabilitar botones que solo pueden ser llamados con una pila instanciada.
+        this.push.setEnabled(false);
+        this.pop.setEnabled(false);
+        this.is_empty.setEnabled(false);
+        this.is_full.setEnabled(false);
+        this.clear.setEnabled(false);
+        this.peek.setEnabled(false);
+        this.display.setEnabled(false);
+
+        this.create_stack.addActionListener(e -> {
             String input = JOptionPane.showInputDialog("Ingrese el tamaño de la pila");
             if (input == null || input.isEmpty()) {
                 error_dialogue("Entrada vacía");
@@ -62,7 +61,34 @@ class App {
                 error_dialogue(String.format("`%s` no puede ser convertido a entero", input));
             }
         });
-        frame.add(create_stack);
+        this.push.addActionListener(e -> {
+            String input = JOptionPane.showInputDialog("Ingrese el valor a insertar");
+            if (input == null || input.isEmpty()) {
+                error_dialogue("Entrada vacía");
+                return;
+            }
+            try {
+                int value = Integer.parseInt(input);
+                event_manager(new Command.Push(value));
+            } catch (Exception ex) {
+                error_dialogue(String.format("`%s` no puede ser convertido a entero", input));
+            }
+        });
+        this.pop.addActionListener(e -> event_manager(new Command.Pop()));
+        this.is_empty.addActionListener(e -> event_manager(new Command.isEmpty()));
+        this.is_full.addActionListener(e -> event_manager(new Command.isFull()));
+        this.clear.addActionListener(e -> event_manager(new Command.Clear()));
+        this.peek.addActionListener(e -> event_manager(new Command.Peek()));
+        this.display.addActionListener(e -> event_manager(new Command.DisplayStack()));
+
+        frame.add(this.create_stack);
+        frame.add(this.push);
+        frame.add(this.pop);
+        frame.add(this.is_empty);
+        frame.add(this.is_full);
+        frame.add(this.clear);
+        frame.add(this.peek);
+        frame.add(this.display);
 
         return;
     }
@@ -70,12 +96,67 @@ class App {
     void event_manager(Command cmd) {
         switch (cmd) {
             case Command.CreateStack cs -> {
+                if (this.pila != null) {
+                    // Confirmar deshacer la pila actual
+                    int option = JOptionPane.showConfirmDialog(null, "Desea reemplazar la pila actual?", laboratorio_1,
+                            JOptionPane.YES_NO_OPTION);
+                    if (option == JOptionPane.NO_OPTION)
+                        return;
+                }
                 this.pila = new Pila<Integer>(cs.value());
-                JOptionPane.showMessageDialog(null, String.format("Creo una pila de %d enteros", cs.value()),
+
+                // habilitar botones que solo pueden ser llamados con una pila instanciada.
+                this.push.setEnabled(true);
+                this.pop.setEnabled(true);
+                this.is_empty.setEnabled(true);
+                this.is_full.setEnabled(true);
+                this.clear.setEnabled(true);
+                this.peek.setEnabled(true);
+                this.display.setEnabled(true);
+
+                JOptionPane.showMessageDialog(null,
+                        String.format("Se creo una pila de capacidad para %d enteros", cs.value()),
                         laboratorio_1, JOptionPane.INFORMATION_MESSAGE);
             }
-            default -> {
-                throw new RuntimeException("Comando no soportado " + cmd.toString());
+            case Command.Push(Integer value) -> {
+                if (this.pila.insertar(value))
+                    JOptionPane.showMessageDialog(null, String.format("Se inserto el valor %d", value), laboratorio_1,
+                            JOptionPane.INFORMATION_MESSAGE);
+                else
+                    error_dialogue("La pila esta llena");
+            }
+            case Command.Pop() -> {
+                if (this.pila.pilaVacia()) {
+                    error_dialogue("La pila esta vacia");
+                    return;
+                }
+                JOptionPane.showMessageDialog(null, String.format("Se elimino el valor %d", this.pila.quitarCima()),
+                        laboratorio_1, JOptionPane.INFORMATION_MESSAGE);
+            }
+            case Command.isEmpty() -> {
+                final String msg = this.pila.pilaVacia() ? "La pila esta vacia" : "La pila no esta vacia";
+                JOptionPane.showMessageDialog(null, msg, laboratorio_1, JOptionPane.INFORMATION_MESSAGE);
+            }
+            case Command.isFull() -> {
+                final String msg = this.pila.pilaLLena() ? "La pila esta llena" : "La pila no esta llena";
+                JOptionPane.showMessageDialog(null, msg, laboratorio_1, JOptionPane.INFORMATION_MESSAGE);
+            }
+            case Command.Clear() -> {
+                this.pila.limpiarPila();
+                JOptionPane.showMessageDialog(null, "Se limpio la pila", laboratorio_1,
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+            case Command.Peek() -> {
+                if (this.pila.pilaVacia()) {
+                    error_dialogue("La pila esta vacia");
+                    return;
+                }
+                JOptionPane.showMessageDialog(null, String.format("El valor en la cima es %d", this.pila.verCima()),
+                        laboratorio_1, JOptionPane.INFORMATION_MESSAGE);
+            }
+            case Command.DisplayStack() -> {
+                JOptionPane.showMessageDialog(null, this.pila.imprimirPila(), laboratorio_1,
+                        JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }
