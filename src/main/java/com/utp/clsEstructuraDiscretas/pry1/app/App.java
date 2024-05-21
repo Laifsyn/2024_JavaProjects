@@ -1,4 +1,4 @@
-package com.utp.clsEstructuraDatos.pry1.app;
+package com.utp.clsEstructuraDiscretas.pry1.app;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

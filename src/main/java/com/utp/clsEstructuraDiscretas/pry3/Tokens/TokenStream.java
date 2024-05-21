@@ -1,4 +1,4 @@
-package com.utp.clsEstructuraDatos.pry3.Tokens;
+package com.utp.clsEstructuraDiscretas.pry3.Tokens;
 
 import java.util.Optional;
 
