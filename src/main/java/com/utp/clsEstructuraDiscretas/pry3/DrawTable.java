@@ -31,7 +31,7 @@ public class DrawTable {
             int ancho_columna = 0;
             for (String[] fila : this.table) {
                 String celda = fila[indice_columna];
-                if (celda.length() > ancho_columna) {
+                if (celda.length() >= ancho_columna) {
                     // +1 para el caracter que encierra la celda
                     ancho_columna = celda.length() + 1;
                     columns_widths[indice_columna] = ancho_columna;

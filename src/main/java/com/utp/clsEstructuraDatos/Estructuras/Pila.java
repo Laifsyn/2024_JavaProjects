@@ -4,12 +4,17 @@ import java.util.ArrayList;
 
 public class Pila<T> {
     public static void main(String[] args) {
-        Pila<Integer> pila = new Pila<>(5);
+        Pila<Integer> pila = new Pila<>(10);
+        pila.insertar(10);
+        pila.insertar(10);
         pila.insertar(1);
-        pila.insertar(2);
-        pila.insertar(3);
-        pila.insertar(4);
-        pila.insertar(5);
+        pila.insertar(-415);
+        pila.insertar(1104);
+        pila.insertar(110);
+        pila.insertar(141);
+        pila.insertar(4142);
+        pila.insertar(11242);
+        pila.insertar(1414214);
         System.out.println("Cima: " + pila.getCima());
         System.out.println(pila.imprimirPila());
         pila.quitarCima();
@@ -18,9 +23,9 @@ public class Pila<T> {
         pila.insertar(6);
         System.out.println("Insertar 6");
         System.out.println(pila.imprimirPila());
-        pila.limpiarPila();
-        System.out.println("Limpiar pila");
-        System.out.println(pila.imprimirPila());
+        // pila.limpiarPila();
+        // System.out.println("Limpiar pila");
+        // System.out.println(pila.imprimirPila());
     }
 
     private int cima = 0;
@@ -163,7 +168,7 @@ class DrawTable {
             int ancho_columna = 0;
             for (String[] fila : this.table) {
                 String celda = fila[indice_columna];
-                if (celda.length() > ancho_columna) {
+                if (celda.length() >= ancho_columna) {
                     // +1 para el caracter que encierra la celda
                     ancho_columna = celda.length() + 1;
                     columns_widths[indice_columna] = ancho_columna;

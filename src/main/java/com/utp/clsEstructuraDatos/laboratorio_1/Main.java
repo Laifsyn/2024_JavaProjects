@@ -3,7 +3,11 @@ package com.utp.clsEstructuraDatos.laboratorio_1;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+
+import java.awt.Font;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.TextArea;
 import java.util.ArrayList;
 
 import com.utp.clsEstructuraDatos.Estructuras.Pila;
@@ -20,12 +24,20 @@ class App {
     final String laboratorio_1 = "Laboratorio 1";
     Pila<Integer> pila;
 
+    TextArea textArea = new TextArea();
+
     void start() {
         JFrame frame = new JFrame(laboratorio_1);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
         frame.setLayout(new GridBagLayout());
         add_button_commands(frame);
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridy = 2;
+        c.gridwidth = 8;
+        this.textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
+        this.textArea.setEditable(false);
+        frame.add(this.textArea, c);
         frame.setVisible(true);
     }
 
@@ -105,6 +117,7 @@ class App {
                 }
                 this.pila = new Pila<Integer>(cs.value());
 
+                this.create_stack.setText("Reemplazar Pila");
                 // habilitar botones que solo pueden ser llamados con una pila instanciada.
                 this.push.setEnabled(true);
                 this.pop.setEnabled(true);
@@ -134,11 +147,13 @@ class App {
                         laboratorio_1, JOptionPane.INFORMATION_MESSAGE);
             }
             case Command.isEmpty() -> {
-                final String msg = this.pila.pilaVacia() ? "La pila esta vacia" : "La pila no esta vacia";
+                final String msg = (this.pila.pilaVacia() ? "La pila esta vacia" : "La pila no esta vacia")
+                        + String.format(". Tiene %d elementos", this.pila.getCima());
                 JOptionPane.showMessageDialog(null, msg, laboratorio_1, JOptionPane.INFORMATION_MESSAGE);
             }
             case Command.isFull() -> {
-                final String msg = this.pila.pilaLLena() ? "La pila esta llena" : "La pila no esta llena";
+                final String msg = (this.pila.pilaLLena() ? "La pila esta llena" : "La pila no esta llena")
+                        + String.format(". Le quedan %d espacios", this.pila.getCapacidad() - this.pila.getCima());
                 JOptionPane.showMessageDialog(null, msg, laboratorio_1, JOptionPane.INFORMATION_MESSAGE);
             }
             case Command.Clear() -> {
@@ -155,10 +170,14 @@ class App {
                         laboratorio_1, JOptionPane.INFORMATION_MESSAGE);
             }
             case Command.DisplayStack() -> {
-                JOptionPane.showMessageDialog(null, this.pila.imprimirPila(), laboratorio_1,
+                TextArea textArea = new TextArea(this.pila.imprimirPila());
+                textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
+                textArea.setEditable(false);
+                JOptionPane.showMessageDialog(null, textArea, laboratorio_1,
                         JOptionPane.INFORMATION_MESSAGE);
             }
         }
+        this.textArea.setText(this.pila.imprimirPila());
     }
 
     void error_dialogue(String msg) {
