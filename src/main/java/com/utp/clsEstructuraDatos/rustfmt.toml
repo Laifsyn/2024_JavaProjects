@@ -1,0 +1,47 @@
+# Update to nightly for nightly gated rustfmt fields
+# Command: "rustup toolchain install nightly"
+
+# Add to setting.json of your profile in VSCode
+# "rust-analyzer.rustfmt.extraArgs": [
+#         "+nightly"
+#     ],
+########################################
+
+# I can't rely on contributors using .editorconfig
+newline_style = "Unix"
+# require the shorthand instead of it being optional
+use_field_init_shorthand = true
+# outdated default — `?` was unstable at the time
+# additionally the `try!` macro is deprecated now
+use_try_shorthand = false
+# Max to use the 100 char width for everything or Default. See https://rust-lang.github.io/rustfmt/?version=v1.4.38&search=#use_small_heuristics
+use_small_heuristics = "Max"
+# Unstable features below
+unstable_features = true
+version = "Two"
+# code can be 100 characters, why not comments?
+comment_width = 100
+# force contributors to follow the formatting requirement
+error_on_line_overflow = true
+# error_on_unformatted = true   ## Error if unable to get comments or string literals within max_width, or they are left with trailing whitespaces.
+# next 4: why not?
+format_code_in_doc_comments = true
+format_macro_bodies = true         ## Format the bodies of macros.
+format_macro_matchers = true       ## Format the metavariable matching patterns in macros.
+## Wraps string when it overflows max_width
+format_strings = true
+# better grepping
+imports_granularity = "Module"
+# quicker manual lookup
+group_imports = "StdExternalCrate"
+# why use an attribute if a normal doc comment would suffice?
+normalize_doc_attributes = true
+# why not?
+wrap_comments = true
+
+merge_derives = false           ## I might need multi-line derives
+overflow_delimited_expr = false
+## When structs, slices, arrays, and block/array-like macros are used as the last argument in an 
+## expression list, allow them to overflow (like blocks/closures) instead of being indented on a new line.
+reorder_impl_items = true
+## Reorder impl items. type and const are put first, then macros and methods.
