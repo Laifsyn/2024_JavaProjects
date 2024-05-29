@@ -35,8 +35,9 @@ fn spawn_app() {
     let funciones = vec!["Fibonacci", "Factorial", "Q", "L"];
     'app: loop {
         let ans = loop {
-            break match Select::new("{Enter} para elegir una función!", funciones.clone()).prompt()
-            {
+            break match Select::new("Elija una función", funciones.clone())
+            .with_help_message("↑↓ para mover, {Enter} para seleccionar, escriba para filtrar")
+            .prompt() {
                 Ok(ans) => ans,
                 Err(error) => {
                     println!("Error: {error}");
@@ -61,7 +62,6 @@ fn spawn_app() {
                 }
             };
         };
-        // use Funcs::*;
         #[rustfmt::skip]
         match funcion {
             Funcs::Q => {println!("Q({}, {}) = {}", args[0], args[1], Q(args[0], args[1]))},
@@ -81,15 +81,21 @@ fn spawn_app() {
                 println!("Factorial({}) = {factorial}", args[0])
             },            
         };
-        if let Ok(true) = Confirm::new("Desea salir? Y/N").prompt() {
-            break;
+        match Confirm::new("Desea salir?").with_placeholder("Y/N").prompt() {
+            Ok(_) | Err(OperationInterrupted)  => break,
+            _=>(),
         }
     }
     println!("Adios!");
 }
 
 fn leer_argumentos(funcion: Funcs) -> Result<Vec<usize>, InquireError> {
-    let ans = Text::new(&format!("Ingrese los argumentos de {funcion}. Ejemplo: `n_1, n_2, n_3`"))
+    let help_message = match funcion {
+        Funcs::Q => "Ejemplo: 25, 2",
+        _ => "Ejemplo: 24"
+    };
+    let ans = Text::new(&format!("Ingrese los argumentos de {funcion}."))
+        .with_help_message(help_message)
         .prompt()?
         .split(',')
         .map(|arg| arg.parse::<usize>())
@@ -176,13 +182,6 @@ fn Q(a: usize, b: usize) -> usize {
     }
     return Q(a - b, b) + 1;
 }
-// 15,5 : 1
-// 10,5 : 1
-// 5,5 : 1
-// 0,5 : 1
-// -5,5 : 0
-// fn Q(15, 5) -> usize {10 - 5, 5) + 1);
-// }
 
 fn L(n: usize) -> usize {
     if n == 1 {
