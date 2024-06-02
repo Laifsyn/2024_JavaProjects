@@ -31,6 +31,7 @@ import java.math.BigInteger;
  * [Como cambiar el color JLabel](https://stackoverflow.com/questions/2966334/how-do-i-set-the-colour-of-a-label-coloured-text-in-java)
  * [Como acomodar el titulo de TitledBorder](https://stackoverflow.com/questions/36405080/why-is-my-titled-border-panel-so-small)
  * [Paneles dentro de Paneles](https://stackoverflow.com/questions/13292964/container-inside-a-container-in-java)
+ * [Como usar Radio Button](https://www.javatpoint.com/java-jradiobutton)
  */
 public class AppCombinatoria {
     public static void main(String[] args) {
