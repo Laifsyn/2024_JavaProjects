@@ -33,7 +33,7 @@ import java.math.BigInteger;
  * [Paneles dentro de Paneles](https://stackoverflow.com/questions/13292964/container-inside-a-container-in-java)
  * [Como usar Radio Button](https://www.javatpoint.com/java-jradiobutton)
  */
-public class AppCombinatoria {
+public class Main {
     public static void main(String[] args) {
         (new App()).run_app();
     }
