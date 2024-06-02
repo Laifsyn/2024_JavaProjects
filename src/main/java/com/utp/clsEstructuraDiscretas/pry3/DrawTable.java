@@ -1,4 +1,4 @@
-package com.utp.clsEstructuraDatos.pry3;
+package com.utp.clsEstructuraDiscretas.pry3;
 
 import java.util.ArrayList;
 

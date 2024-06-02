@@ -1,9 +1,9 @@
-package com.utp.clsEstructuraDatos.pry3.Tokens;
+package com.utp.clsEstructuraDiscretas.pry3.Tokens;
 
 import java.util.HashMap;
 import java.util.Optional;
 
-import com.utp.clsEstructuraDatos.pry3.Operator;
+import com.utp.clsEstructuraDiscretas.pry3.Operator;
 import com.utp.utils.Result;
 
 /**

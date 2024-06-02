@@ -1,7 +1,7 @@
-package com.utp.clsEstructuraDatos.pry3;
+package com.utp.clsEstructuraDiscretas.pry3;
 
-import com.utp.clsEstructuraDatos.pry3.Tokens.Token;
-import com.utp.clsEstructuraDatos.pry3.Tokens.TokenStream;
+import com.utp.clsEstructuraDiscretas.pry3.Tokens.Token;
+import com.utp.clsEstructuraDiscretas.pry3.Tokens.TokenStream;
 import com.utp.utils.Result;
 
 //  * Desarrollar un programa en lenguaje C/C++ o Java que elabore 
