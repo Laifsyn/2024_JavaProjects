@@ -173,13 +173,13 @@ class Preguntas {
         if (orden.is_yes()) {
             if (exhaustivo.is_yes()) {
                 if (repetible.is_yes()) {
-                    return VarianteFormula.VARIANZA_REPETIDAS;
+                    return VarianteFormula.PERMUTACIONES_REPETIDAS;
                 } else {
                     return VarianteFormula.PERMUTACIONES;
                 }
             } else {
                 if (repetible.is_yes()) {
-                    return VarianteFormula.PERMUTACIONES_REPETIDAS;
+                    return VarianteFormula.VARIANZA_REPETIDAS;
                 } else {
                     return VarianteFormula.VARIANZA;
                 }
