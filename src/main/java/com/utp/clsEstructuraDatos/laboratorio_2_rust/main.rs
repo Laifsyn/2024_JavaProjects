@@ -2,13 +2,8 @@
 #![allow(unused_imports)]
 #![allow(clippy::needless_return)]
 
-use std::error::Error;
-use std::ops::Mul;
-use std::thread::spawn;
-
-use inquire::formatter::OptionFormatter;
-use inquire::list_option::ListOption;
-use inquire::{Confirm, InquireError, MultiSelect, Select, Text};
+use colored::Colorize;
+use inquire::{Confirm, InquireError, Select, Text};
 fn main() {
     // let fibonaccies: [u128; 20] = [
     //     0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181,
@@ -49,12 +44,14 @@ fn spawn_app() {
             };
         };
 
+        // Obtener la función seleccionada para luego compararlo en el `switch`
         let funcion = Funcs::from_str(ans).unwrap(); // El selector solo tiene funciones válidad cargadas
+        // Obtener los argumentos para la función
         let args = loop {
             break match leer_argumentos(funcion) {
                 Ok(args) => args,
                 Err(error) => {
-                    println!("Error: {error:?}");
+                    println!("Error: {error}", error = error.to_string().bright_red().bold());
                     if matches!(error, OperationCanceled | OperationInterrupted) {
                         break 'app;
                     }
@@ -62,27 +59,28 @@ fn spawn_app() {
                 }
             };
         };
+        // Ejecutar la función seleccionada
         #[rustfmt::skip]
         match funcion {
             Funcs::Q => {println!("Q({}, {}) = {}", args[0], args[1], Q(args[0], args[1]))},
             Funcs::L => {println!("L({}) = {}", args[0], L(args[0]))},
             Funcs::Fibonacci => {
                 let Some(fibonacci) = fib(args[0]) else {
-                    println!("Fibonacci({}) no es calculable", args[0]);
+                    println!("{}", format!("Fibonacci({}) no es calculable", args[0]).bright_red().bold());
                     continue;
                 };
                 println!("Fibonacci({}) = {fibonacci}", args[0])
             },
             Funcs::Factorial => {
                 let Some(factorial) = factorial(args[0]) else {
-                    println!("Factorial({}) no es calculable", args[0]);
+                    println!("{}", format!("Factorial({}) no es calculable", args[0]).bright_red().bold());
                     continue;
                 };
-                println!("Factorial({}) = {factorial}", args[0])
+                println!("Factorial({}) = {factorial} ({} digitos)", args[0], factorial.to_string().len());
             },            
         };
         match Confirm::new("Desea salir?").with_placeholder("Y/N").prompt() {
-            Ok(_) | Err(OperationInterrupted)  => break,
+            Ok(true) | Err(OperationInterrupted)  => break,
             _=>(),
         }
     }
@@ -111,7 +109,7 @@ fn leer_argumentos(funcion: Funcs) -> Result<Vec<usize>, InquireError> {
     (ans.len() >= argumentos_requeridos).then_some(()).ok_or(InquireError::Custom(
         format!(
             "La función {funcion:?} requiere `{argumentos_requeridos}` argumento(s), pero se \
-             escribieron `{}` argumentos",
+             escribieron `{}` argumento(s)",
             ans.len()
         )
         .into(),
@@ -149,16 +147,18 @@ impl std::fmt::Display for Funcs {
 }
 
 fn fib(nth: usize) -> Option<u128> {
-    let mut left: u128 = 0;
-    let mut right: u128 = 1;
-    let mut result: u128 = 0;
     match nth {
         0 => return None, // Fibonacci de 0 no es calculable
         1 => return Some(0),
         2 => return Some(1),
         _ => (),
     }
+    
+    let mut left: u128 = 0;
+    let mut right: u128 = 1;
+    let mut result: u128 = 0;
 
+    // Iterar desde 3 hasta nth inclusive
     for _ in 3..=nth {
         result = left.checked_add(right)?;
         left = right;
@@ -168,11 +168,11 @@ fn fib(nth: usize) -> Option<u128> {
 }
 
 /// Factorial Recursivo
-fn factorial(n: usize) -> Option<u128> {
+fn factorial(n: usize) -> Option<num_bigint::BigInt> {
     if let 0..=1 = n {
-        return Some(1);
+        return Some(1.into());
     } else {
-        return (n as u128).checked_mul(factorial(n - 1)?);
+        return num_bigint::BigInt::from(n).checked_mul(&factorial(n - 1)?);
     }
 }
 
