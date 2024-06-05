@@ -59,6 +59,7 @@ fn spawn_app() {
                 }
             };
         };
+        
         // Ejecutar la función seleccionada
         #[rustfmt::skip]
         match funcion {
@@ -76,7 +77,7 @@ fn spawn_app() {
                     println!("{}", format!("Factorial({}) no es calculable", args[0]).bright_red().bold());
                     continue;
                 };
-                println!("Factorial({}) = {factorial} ({} digitos)", args[0], factorial.to_string().len());
+                println!("Factorial({}) = {factorial} \n{}", args[0], format!("({} digitos)", factorial.to_string().len()).on_black().cyan());
             },            
         };
         match Confirm::new("Desea salir?").with_placeholder("Y/N").prompt() {
@@ -168,12 +169,30 @@ fn fib(nth: usize) -> Option<u128> {
 }
 
 /// Factorial Recursivo
+#[cfg(not(feature = "tailcall"))]
 fn factorial(n: usize) -> Option<num_bigint::BigInt> {
     if let 0..=1 = n {
         return Some(1.into());
     } else {
         return num_bigint::BigInt::from(n).checked_mul(&factorial(n - 1)?);
     }
+}
+
+/// Factorial Recursivo
+/// Compilar con `tailcall` para obtener esta función
+/// `cargo run --release --features "tailcall"`
+#[cfg(feature = "tailcall")]
+fn factorial<T:TryInto<u16>>(n: T) -> Option<num_bigint::BigUint> {
+    use num_bigint::BigUint;
+    let n = n.try_into().ok()?;
+    #[tailcall::tailcall]
+    fn tail_recursive_factorial(n: u16, acc: BigUint) -> BigUint {
+        match n {
+            0 => acc,
+            _ => tail_recursive_factorial(n - 1, acc * n)
+        }
+    }
+    return Some(tail_recursive_factorial(n, 1u8.into()));
 }
 
 fn Q(a: usize, b: usize) -> usize {
