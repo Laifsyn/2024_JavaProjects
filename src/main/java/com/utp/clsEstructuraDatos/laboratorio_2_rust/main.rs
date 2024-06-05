@@ -97,7 +97,7 @@ fn leer_argumentos(funcion: Funcs) -> Result<Vec<usize>, InquireError> {
         .with_help_message(help_message)
         .prompt()?
         .split(',')
-        .map(|arg| arg.parse::<usize>())
+        .map(|arg| arg.trim().parse::<usize>())
         .collect::<Result<Vec<usize>, _>>()
         .map_err(|e| InquireError::Custom(format!("Error: {e}").into()))?;
     use Funcs::*;
