@@ -179,7 +179,7 @@ fn factorial(n: usize) -> Option<num_bigint::BigInt> {
 }
 
 /// Factorial Recursivo
-/// Compilar con `tailcall` para obtener esta función
+/// Compilar con `tailcall` para usar esta función
 /// `cargo run --release --features "tailcall"`
 #[cfg(feature = "tailcall")]
 fn factorial<T:TryInto<u16>>(n: T) -> Option<num_bigint::BigUint> {
