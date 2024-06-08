@@ -5,13 +5,13 @@
 use colored::Colorize;
 use inquire::{Confirm, InquireError, Select, Text};
 fn main() {
-    // let fibonaccies: [u128; 20] = [
-    //     0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181,
-    // ];
+    let fibonaccies: [u128; 20] = [
+        0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181,
+    ];
     for i in 1..=45 {
         let num = fib(i).expect("No es fibonacci de 0");
         println!("Fib({i}) = {num}");
-        // assert_eq!(fibonaccies[i as usize - 1], num)
+        assert_eq!(fibonaccies[i as usize - 1], num)
     }
 
     for i in 1..20 {
@@ -97,7 +97,7 @@ fn leer_argumentos(funcion: Funcs) -> Result<Vec<usize>, InquireError> {
         .with_help_message(help_message)
         .prompt()?
         .split(',')
-        .map(|arg| arg.parse::<usize>())
+        .map(|arg| arg.parse::<usize>()) // hello world
         .collect::<Result<Vec<usize>, _>>()
         .map_err(|e| InquireError::Custom(format!("Error: {e}").into()))?;
     use Funcs::*;
