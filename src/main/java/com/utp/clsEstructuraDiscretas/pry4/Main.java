@@ -20,6 +20,7 @@ import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionListener;
 import java.math.BigInteger;
+import java.util.ArrayList;
 
 /*
  * Conclusiones: Idealmente se quiere siempre insertar JPanels al JFrame. Esto tiende a permitir mucha mayor 
@@ -49,15 +50,34 @@ class App {
     public App() {
         this.entradas = new Entrada_JTextField(10);
         this.preguntas = new Preguntas(new SiNoRadioButton(), new SiNoRadioButton(), new SiNoRadioButton());
-        this.resultado = new JLabel("Resultado:");
+        this.resultado = new JLabel();
 
         // Acopla evento para calcular el resultado
         entradas.addActionListener(e -> {
             SendCommand(new Commands.CalculateCombinatoria(entradas.n.getText(), entradas.r.getText()));
+            try_pack();
         });
         preguntas.addActionListener(e -> {
             SendCommand(new Commands.CalculateCombinatoria(entradas.n.getText(), entradas.r.getText()));
+
+            if (preguntas.tipo_formula() == VarianteFormula.PERMUTACIONES_REPETIDAS) {
+                entradas.r_label.setText("r : a,b,c,...");
+                entradas.r_label.setForeground(Color.MAGENTA);
+            } else {
+                entradas.r_label.setText("r");
+                entradas.r_label.setForeground(Color.BLACK);
+            }
+            try_pack();
         });
+    }
+
+    void try_pack() {
+        Dimension current_size = frame.getSize();
+        Dimension preferred_size = frame.getPreferredSize();
+        int new_width = Math.max(current_size.width, preferred_size.width);
+        int new_height = Math.max(current_size.height, preferred_size.height);
+        if (new_width != current_size.width || new_height != current_size.height)
+            frame.setSize(new_width, new_height);
     }
 
     void run_app() {
@@ -88,6 +108,26 @@ class App {
         frame.setVisible(true);
     }
 
+    String pretty_big_int(BigInteger big_int) {
+        if (big_int.compareTo(BigInteger.valueOf(1000)) < 0) {
+            return String.valueOf(big_int);
+        }
+        // Thousand separated BigInteger
+        ArrayList<Integer> triplets = new ArrayList<>();
+
+        while (big_int.compareTo(BigInteger.ZERO) > 0) {
+            triplets.add(big_int.mod(BigInteger.valueOf(1000)).intValue());
+            big_int = big_int.divide(BigInteger.valueOf(1000));
+        }
+        StringBuilder builder = new StringBuilder();
+        builder.append(triplets.remove(0));
+        for (Integer triplet : triplets) {
+            builder.append(",");
+            builder.append(String.format("%03d", triplet));
+        }
+        return builder.toString();
+    }
+
     public void SendCommand(Commands command) {
         switch (command) {
             case Commands.CalculateCombinatoria(String n, String r) -> {
@@ -96,7 +136,7 @@ class App {
                     resultado.setText("Error: " + respuesta.unwrapError().getMessage());
                     resultado.setForeground(Color.RED);
                 } else {
-                    resultado.setText("Resultado: " + respuesta.unwrapOk());
+                    resultado.setText("Resultado: " + pretty_big_int(respuesta.unwrapOk()));
                     resultado.setForeground(new Color(24, 90, 55));
                 }
             }
@@ -110,20 +150,24 @@ class App {
 class Entrada_JTextField {
     public final JTextField n;
     public final JTextField r;
+    final JLabel n_label;
+    public final JLabel r_label;
 
     public Entrada_JTextField(int columns) {
+        this.n_label = new JLabel("n");
+        this.r_label = new JLabel("r");
         this.n = new JTextField();
         this.r = new JTextField();
         this.n.setColumns(columns);
         this.r.setColumns(columns);
     }
 
-    JPanel panel_de(JTextField field, String label) {
+    JPanel panel_de(JTextField field, JLabel label) {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.insets = new Insets(0, 5, 0, 5);
         constraints.gridx = 0;
-        panel.add(new JLabel(label), constraints);
+        panel.add(label, constraints);
         constraints.gridx++;
         panel.add(field, constraints);
         return panel;
@@ -135,9 +179,10 @@ class Entrada_JTextField {
         constraints.insets = new Insets(0, 5, 0, 5);
         constraints.gridx = 0;
         constraints.gridy = 0;
-        panel.add(panel_de(n, "n"), constraints);
+        constraints.anchor = GridBagConstraints.EAST;
+        panel.add(panel_de(n, n_label), constraints);
         constraints.gridy++;
-        panel.add(panel_de(r, "r"), constraints);
+        panel.add(panel_de(r, r_label), constraints);
         return panel;
     }
 
@@ -225,6 +270,7 @@ class Preguntas {
 
     }
 }
+
 class SiNoRadioButton {
     public final JRadioButton si;
     public final JRadioButton no;
@@ -308,7 +354,6 @@ sealed interface Commands {
 }
 // @formatter:on
 
-
 enum VarianteFormula {
     PERMUTACIONES, COMBINACIONES, VARIANZA, PERMUTACIONES_REPETIDAS, COMBINACIONES_REPETIDAS, VARIANZA_REPETIDAS;
 
@@ -370,4 +415,3 @@ enum VarianteFormula {
         return Result.error(new UnsupportedOperationException("No se ha implementado la formula"));
     }
 }
-
