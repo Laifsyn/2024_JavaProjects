@@ -51,7 +51,7 @@ class App {
         this.entradas = new Entrada_JTextField(10);
         this.preguntas = new Preguntas(new SiNoRadioButton(), new SiNoRadioButton(), new SiNoRadioButton());
         this.resultado = new JLabel();
-
+        this.resultado.setFont(new Font(Font.MONOSPACED, Font.BOLD, 14));
         // Acopla evento para calcular el resultado
         entradas.addActionListener(e -> {
             SendCommand(new Commands.CalculateCombinatoria(entradas.n.getText(), entradas.r.getText()));
