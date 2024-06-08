@@ -11,14 +11,8 @@ import java.awt.TextArea;
 import java.util.ArrayList;
 
 import com.utp.clsEstructuraDatos.Estructuras.Pila;
-class Num2Words{
-    public static String to_word(String input, String options){
-        return "Me llamaste";
-    }
-}
 public class Main {
     public static void main(String[] args) {
-        System.out.println(Num2Words.to_word(null, null));;
         App app = new App();
         app.start();
     }
