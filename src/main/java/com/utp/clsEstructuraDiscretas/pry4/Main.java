@@ -99,6 +99,7 @@ class App {
         constraints.gridx = 0;
         constraints.gridy++;
         constraints.gridwidth = 2;
+        constraints.anchor = GridBagConstraints.EAST;
         panel_final.add(resultado, constraints);
 
         frame.add(panel_final);
@@ -108,22 +109,22 @@ class App {
         frame.setVisible(true);
     }
 
+    // Thousand separated BigInteger
     String pretty_big_int(BigInteger big_int) {
         if (big_int.compareTo(BigInteger.valueOf(1000)) < 0) {
             return String.valueOf(big_int);
         }
-        // Thousand separated BigInteger
         ArrayList<Integer> triplets = new ArrayList<>();
-
+        // Insertar Triplets en LowEndian
         while (big_int.compareTo(BigInteger.ZERO) > 0) {
             triplets.add(big_int.mod(BigInteger.valueOf(1000)).intValue());
             big_int = big_int.divide(BigInteger.valueOf(1000));
         }
         StringBuilder builder = new StringBuilder();
-        builder.append(triplets.remove(0));
-        for (Integer triplet : triplets) {
+        builder.append(triplets.remove(triplets.size() - 1));
+        for (int i = triplets.size() - 1; i >= 0; i--) {
             builder.append(",");
-            builder.append(String.format("%03d", triplet));
+            builder.append(String.format("%03d", triplets.get(i)));
         }
         return builder.toString();
     }
