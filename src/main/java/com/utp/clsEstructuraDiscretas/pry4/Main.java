@@ -404,7 +404,13 @@ enum VarianteFormula {
                 return Formulas.Varianza_sin_repeticion(new String[] { n, r });
             }
             case PERMUTACIONES_REPETIDAS -> {
-                return Formulas.Permutacion_con_repeticion(new String[] { n, r });
+                var split_r = r.split(",");
+                for (int i = 0; i < split_r.length; i++)
+                    split_r[i] = split_r[i].trim();
+                String[] args = new String[split_r.length + 1];
+                args[0] = n;
+                System.arraycopy(split_r, 0, args, 1, split_r.length);
+                return Formulas.Permutacion_con_repeticion(args);
             }
             case COMBINACIONES_REPETIDAS -> {
                 return Formulas.Comb_con_repeticion(new String[] { n, r });
