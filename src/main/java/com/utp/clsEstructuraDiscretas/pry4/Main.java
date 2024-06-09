@@ -115,16 +115,24 @@ class App {
             return String.valueOf(big_int);
         }
         ArrayList<Integer> triplets = new ArrayList<>();
+        BigInteger acc = big_int;
         // Insertar Triplets en LowEndian
-        while (big_int.compareTo(BigInteger.ZERO) > 0) {
-            triplets.add(big_int.mod(BigInteger.valueOf(1000)).intValue());
-            big_int = big_int.divide(BigInteger.valueOf(1000));
+        while (acc.compareTo(BigInteger.ZERO) > 0) {
+            triplets.add(acc.mod(BigInteger.valueOf(1000)).intValue());
+            acc = acc.divide(BigInteger.valueOf(1000));
         }
         StringBuilder builder = new StringBuilder();
         builder.append(triplets.remove(triplets.size() - 1));
         for (int i = triplets.size() - 1; i >= 0; i--) {
             builder.append(",");
             builder.append(String.format("%03d", triplets.get(i)));
+        }
+        String bigint_string = big_int.toString();
+        final int MAX_LENGTH = 20 * 3;
+        if (bigint_string.length() >= MAX_LENGTH) {
+            String substring = builder.toString().substring(0, MAX_LENGTH);
+            int commas = substring.length() - substring.replace(",", "").length();
+            return substring + "...+" + (commas + bigint_string.length() - MAX_LENGTH);
         }
         return builder.toString();
     }
