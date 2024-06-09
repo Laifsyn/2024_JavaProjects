@@ -16,6 +16,7 @@ public class Formulas {
         }
         return result;
     }
+
     public static Result<BigInteger, Exception> Comb_sin_repeticion(String[] args) {
         var this_function = new Object() {}.getClass().getEnclosingMethod().getName();
         try {
@@ -51,17 +52,41 @@ public class Formulas {
 
     public static Result<BigInteger, Exception> Varianza_con_repeticion(String[] args) {
         var this_function = new Object() {}.getClass().getEnclosingMethod().getName();
-        return Result.error(new UnsupportedOperationException(this_function + " Not supported yet."));
+        try {
+            int n = Integer.parseInt(args[0]);
+            int r = Integer.parseInt(args[1]);
+            BigInteger result = BigInteger.valueOf(n).pow(r);
+            return Result.ok(result);
+        } catch (Exception e) {
+            return Result.error(e);
+        }
     }
 
     public static Result<BigInteger, Exception> Permutacion_sin_repeticion(String[] args) {
         var this_function = new Object() {}.getClass().getEnclosingMethod().getName();
-        return Result.error(new UnsupportedOperationException(this_function + " Not supported yet."));
+        try {
+            int n = Integer.parseInt(args[0]);
+            return Result.ok(factorial(n));
+        } catch (Exception e) {
+            return Result.error(e);
+        }
     }
 
     public static Result<BigInteger, Exception> Permutacion_con_repeticion(String[] args) {
         var this_function = new Object() {}.getClass().getEnclosingMethod().getName();
-        return Result.error(new UnsupportedOperationException(this_function + " Not supported yet."));
+        try {
+            int n = Integer.parseInt(args[0]);
+            int[] counts = new int[args.length - 1];
+            for (int i = 1; i < args.length; i++) {
+                counts[i - 1] = Integer.parseInt(args[i]);
+            }
+            BigInteger denominator = BigInteger.ONE;
+            for (int count : counts) {
+                denominator = denominator.multiply(factorial(count));
+            }
+            return Result.ok(factorial(n).divide(denominator));
+        } catch (Exception e) {
+            return Result.error(e);
+        }
     }
-
 }
