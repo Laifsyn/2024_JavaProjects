@@ -1,4 +1,4 @@
-package com.utp.clsEstructuraDatos.Estructuras;
+package com.utp.clsEstructuraDatos.Estructuras.colas;
 
 public class Cola<T> {
     public static void main(String[] args) {
