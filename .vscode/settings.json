@@ -1,4 +1,7 @@
 {
     "java.format.settings.url": "eclipse-formatter.xml",
-    "java.checkstyle.configuration": "${workspaceFolder}\\checkstyle.xml"
+    "editor.tokenColorCustomizations": {
+        "comments": "",
+        "textMateRules": []
+    }
 }

@@ -7,11 +7,11 @@ public class ColaCircular<T> extends AbstractCola<T> {
 
     @Override
     public Result insertar(T elemento) {
-        if (this.isFull()) {
+        if (this.isFull())
             return new Result.ColaLlena();
-        }
+
         this.inner[cola] = elemento;
-        // `(9 + 1) % 10 => 0`
+        
         this.cola = (cola + 1) % capacidad;
         this.longitud++;
         return new Result.OK();
@@ -19,14 +19,12 @@ public class ColaCircular<T> extends AbstractCola<T> {
 
     @Override
     public Option<T> quitar() {
-        if (this.isEmpty()) {
+        if (this.isEmpty())
             return new Option.None<>();
-        }
 
         T elemento = this.inner[frente];
         inner[frente] = null;
 
-        // `(9 + 1) % 10 => 0`
         frente = (frente + 1) % capacidad;
         longitud--;
         return new Option.Some<>(elemento);

@@ -14,7 +14,8 @@ public class ColaSimple<T> extends AbstractCola<T> {
      * puede insertar o quitar son <b>`ColaSimple.capacidad`</b> elementos
      * </p>
      * 
-     * @param capacidad int
+     * @param capacidad
+     *            int
      */
     public ColaSimple(int capacidad) {
         super(capacidad);
@@ -30,6 +31,7 @@ public class ColaSimple<T> extends AbstractCola<T> {
             return new Result.ColaLlena();
 
         this.inner[cola] = elemento;
+
         this.cola = (cola + 1) % capacidad;
         this.longitud++;
         return new Result.OK();
@@ -40,9 +42,9 @@ public class ColaSimple<T> extends AbstractCola<T> {
      */
     @Override
     public Option<T> quitar() {
-        if (this.isEmpty()) {
+        if (this.isEmpty())
             return new Option.None<>();
-        }
+
         T elemento = this.inner[frente];
         frente = (frente + 1) % capacidad;
         if (frente == cola)
