@@ -172,7 +172,7 @@ public abstract class AbstractCola<T> {
             // ******************************************
 
             if (cola < capacidad - 1)
-                this.cola_surplus.setText("[" + (cola + 1 - capacidad) + "]");
+                this.cola_surplus.setText("[+" + (capacidad - (cola + 1)) + "...]");
             else
                 this.cola_surplus.setText("");
         }
@@ -201,7 +201,7 @@ public abstract class AbstractCola<T> {
 
             // ******************************************
 
-            this.cola_surplus.setText("[" + (cola + 1 - capacidad) + "]");
+            this.cola_surplus.setText("[" + (capacidad - (cola + 1)) + "]");
         }
 
     }
