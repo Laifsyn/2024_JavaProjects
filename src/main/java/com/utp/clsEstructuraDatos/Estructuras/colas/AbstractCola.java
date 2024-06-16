@@ -93,12 +93,11 @@ public abstract class AbstractCola<T> {
         return sb.toString();
     }
 
-    public JPanel as_Jpanel() {
-        return new PanelDrawer(this).as_panel();
+    public PanelDrawer as_drawer() {
+        return new PanelDrawer(this);
     }
 
-    private class PanelDrawer {
-        final JPanel panel = new JPanel(new GridBagLayout());
+    public class PanelDrawer {
         final AbstractCola<T> cola;
         final JLabel front_surplus = new JLabel();
         final JLabel frente_item = new JLabel();
@@ -115,6 +114,26 @@ public abstract class AbstractCola<T> {
          */
         PanelDrawer(AbstractCola<T> cola) {
             this.cola = cola;
+        }
+
+        public int frente() {
+            return this.cola.frente;
+        }
+
+        public int cola() {
+            return this.cola.cola;
+        }
+
+        public int longitud() {
+            return this.cola.longitud;
+        }
+
+        public int capacity() {
+            return this.cola.capacity();
+        }
+
+        public JPanel as_panel() {
+            JPanel panel = new JPanel(new GridBagLayout());
             var c = new GridBagConstraints(0, 0, 1, 5, 0, 0, GridBagConstraints.CENTER, 0, new Insets(5, 5, 5, 5), 0,
                     0);
             panel.add(front_surplus, c);
@@ -126,30 +145,30 @@ public abstract class AbstractCola<T> {
             panel.add(cola_item, c);
             c.gridy = 4;
             panel.add(cola_surplus, c);
-        }
 
-        JPanel as_panel() {
             int frente = this.cola.frente;
             int cola = this.cola.cola;
-            int capacidad = this.cola.capacity();
-            int longitud = this.cola.longitud;
 
             // ******************************************
 
             if (frente > cola)
-                wrapped(frente, cola, capacidad, longitud);
+                wrapped();
             else
-                aligned(frente, cola, capacidad, longitud);
+                aligned();
 
             // ******************************************
-            return this.panel;
+            return panel;
         }
 
         /**
          * llamado cuando frente (donde se retira de la fila) es menor o igual que el
          * indice de la cola
          */
-        void aligned(int frente, int cola, int capacidad, int longitud) {
+        public void aligned() {
+            int frente = this.frente();
+            int cola = this.cola();
+            int capacidad = this.capacity();
+            int longitud = this.longitud();
 
             if (frente > 0)
                 this.front_surplus.setText("[" + (frente - 1) + "]");
@@ -181,7 +200,12 @@ public abstract class AbstractCola<T> {
          * llamado cuando frente (donde se retira de la fila) es mayor que el indice de
          * la cola
          */
-        void wrapped(int frente, int cola, int capacidad, int longitud) {
+        public void wrapped() {
+
+            int frente = this.frente();
+            int cola = this.cola();
+            int capacidad = this.capacity();
+            int longitud = this.longitud();
 
             this.front_surplus.setText("(" + frente + ")");
 

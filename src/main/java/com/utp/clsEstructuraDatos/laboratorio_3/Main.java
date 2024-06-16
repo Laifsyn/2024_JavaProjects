@@ -10,7 +10,6 @@ import javax.swing.JPanel;
 import com.utp.clsEstructuraDatos.Estructuras.colas.AbstractCola;
 import com.utp.clsEstructuraDatos.Estructuras.colas.ColaCircular;
 import com.utp.clsEstructuraDatos.Estructuras.colas.ColaSimple;
-import com.utp.clsEstructuraDatos.Estructuras.colas.AbstractCola.QueueDrawer;
 
 import static com.utp.clsEstructuraDatos.laboratorio_3.ColasApp.CMD.*;
 
@@ -34,6 +33,7 @@ class ColasApp {
     final JButton btn_mostrar = new JButton("Mostrar");
     final JPanel panel_cola = new JPanel();
     final JFrame frame = new JFrame(LABORATORIO);
+    AbstractCola<Integer>.PanelDrawer drawer;
     AbstractCola<Integer> cola;
 
     static int COLA_CIRCULAR = 0;
@@ -166,6 +166,10 @@ class ColasApp {
             case Pack() -> {
                 this.try_pack();
             }
+            case Redraw() -> {
+
+                this.try_pack();
+            }
             case CrearCola(int capacidad_cola) -> {
                 // TODO: Descomentar
                 // int cola = prompt_colas_type();
@@ -179,7 +183,9 @@ class ColasApp {
                         this.cola.capacity());
                 this.btn_crear_cola.setText(new_text);
                 switch_buttons(true);
-
+                this.drawer = this.cola.as_drawer();
+                this.panel_cola.removeAll();
+                this.panel_cola.add(drawer.as_panel());
                 this.send_command(new Redraw());
                 this.try_pack();
             }
