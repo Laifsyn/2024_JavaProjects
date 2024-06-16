@@ -1,5 +1,6 @@
 package com.utp.clsEstructuraDatos.Estructuras.colas;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -73,6 +74,11 @@ public abstract class AbstractCola<T> {
         this.longitud = 0;
     }
 
+    /** Cantidad de elementos accesibles en la cola */
+    public int len() {
+        return this.longitud;
+    }
+
     /**
      * Devuelve una representación opinionada de la cola en forma de cadena
      */
@@ -134,8 +140,12 @@ public abstract class AbstractCola<T> {
 
         public JPanel as_panel() {
             JPanel panel = new JPanel(new GridBagLayout());
-            var c = new GridBagConstraints(0, 0, 1, 5, 0, 0, GridBagConstraints.CENTER, 0, new Insets(5, 5, 5, 5), 0,
-                    0);
+            var c = new GridBagConstraints();
+            c.insets = new Insets(2, 5, 5, 5);
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.gridx = 0;
+            c.gridy = 0;
+
             panel.add(front_surplus, c);
             c.gridy = 1;
             panel.add(frente_item, c);
@@ -166,34 +176,26 @@ public abstract class AbstractCola<T> {
          */
         public void aligned() {
             int frente = this.frente();
-            int cola = this.cola();
-            int capacidad = this.capacity();
-            int longitud = this.longitud();
-
-            if (frente > 0)
-                this.front_surplus.setText("[" + (frente - 1) + "]");
-            else
+            if (frente > 0) {
+                this.front_surplus.setText("[+" + (frente) + "...]");
+                this.front_surplus.setForeground(Color.BLACK);
+                this.front_surplus.setToolTipText("Espacio libre antes del frente");
+            } else {
                 this.front_surplus.setText("");
+                this.front_surplus.setToolTipText(null);
+            }
+            update_content();
 
-            // ******************************************
-
-            this.frente_item.setText("[" + this.cola.inner[frente] + "]");
-            // ******************************************
-
-            if (longitud > 0)
-                this.middle.setText("[..." + longitud + "...]");
-            else
-                this.middle.setText("[0]");
-
-            // ******************************************
-            this.cola_item.setText("[" + this.cola.inner[cola] + "]");
-
-            // ******************************************
-
-            if (cola < capacidad - 1)
-                this.cola_surplus.setText("[+" + (capacidad - (cola + 1)) + "...]");
-            else
-                this.cola_surplus.setText("");
+            int capacidad = this.capacity();
+            if (this.longitud() < capacidad) {
+                this.cola_surplus.setText("[...+" + (capacidad - this.cola()) + "]");
+                this.cola_surplus.setForeground(Color.BLACK);
+                this.cola_surplus.setToolTipText("Espacio libre para inserción");
+            } else {
+                this.cola_surplus.setText("[Full]");
+                this.cola_surplus.setForeground(Color.RED);
+                this.cola_surplus.setToolTipText(null);
+            }
         }
 
         /**
@@ -201,31 +203,63 @@ public abstract class AbstractCola<T> {
          * la cola
          */
         public void wrapped() {
-
             int frente = this.frente();
-            int cola = this.cola();
-            int capacidad = this.capacity();
-            int longitud = this.longitud();
+            this.front_surplus.setText("Frente idx: (" + frente + ")");
+            this.front_surplus.setToolTipText("Indice de frente");
+            update_content();
 
-            this.front_surplus.setText("(" + frente + ")");
+            if (this.longitud() < this.capacity()) {
+                this.cola_surplus.setText("[...+" + (frente - this.cola()) + "]");
+                this.cola_surplus.setForeground(Color.BLACK);
+                this.cola_surplus.setToolTipText("Espacio libre para inserción");
+            } else {
+                this.cola_surplus.setText("[Full]");
+                this.cola_surplus.setForeground(Color.RED);
+                this.cola_surplus.setToolTipText(null);
+            }
+        }
 
-            // ******************************************
-
-            this.frente_item.setText("[" + this.cola.inner[frente] + "]");
-
-            // ******************************************
-
-            if (longitud > 0)
-                this.middle.setText("[..." + longitud + "...]");
-            else
-                this.middle.setText("[0]");
-
-            // ******************************************
-            this.cola_item.setText("[" + this.cola.inner[cola] + "]");
+        void update_content() {
 
             // ******************************************
 
-            this.cola_surplus.setText("[" + (capacidad - (cola + 1)) + "]");
+            if (longitud > 0) {
+                this.frente_item.setText("Frente: [" + this.cola.inner[frente] + "]");
+                this.frente_item.setForeground(Color.BLACK);
+                this.frente_item.setToolTipText("Elemento en la posición de frente");
+            } else {
+                this.frente_item.setText("Frente: [_EMPTY_]");
+                this.frente_item.setForeground(Color.RED);
+                this.frente_item.setToolTipText("La cola está vacía");
+            }
+            // ******************************************
+
+            if (longitud > 0) {
+                this.middle.setText("Longitud: [..." + longitud + "...]");
+                this.middle.setForeground(Color.BLACK);
+                this.middle.setToolTipText("Cantidad de elementos en la cola");
+            } else {
+                this.middle.setText("Longitud: [0]");
+                this.middle.setForeground(Color.RED);
+                this.middle.setToolTipText("No hay elementos en la cola");
+            }
+
+            // ******************************************
+            int cola_index_item = (this.cola() - 1) % capacidad;
+            if (cola_index_item < 0) {
+                cola_index_item += capacidad;
+            }
+            if (longitud > 0) {
+                this.cola_item.setText("Cola: [" + this.cola.inner[cola_index_item] + "]");
+                this.cola_item.setForeground(Color.BLACK);
+                this.cola_item.setToolTipText("Elemento en la posición de cola");
+            } else {
+                this.cola_item.setText("Cola: [_EMPTY_]");
+                this.cola_item.setForeground(Color.RED);
+                this.cola_item.setToolTipText("La cola está vacía");
+            }
+
+            // ******************************************
         }
 
     }

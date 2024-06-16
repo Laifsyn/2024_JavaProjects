@@ -46,6 +46,7 @@ public class ColaSimple<T> extends AbstractCola<T> {
             return new Option.None<>();
 
         T elemento = this.inner[frente];
+        this.inner[frente] = null;
         frente = (frente + 1) % capacidad;
         if (frente == cola)
             this.reset();

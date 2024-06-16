@@ -3,7 +3,6 @@ package com.utp.clsEstructuraDatos.laboratorio_3;
 import javax.management.RuntimeErrorException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -31,7 +30,7 @@ class ColasApp {
     final JButton btn_quitar = new JButton("Quitar");
     final JButton btn_limpiar = new JButton("Limpiar");
     final JButton btn_mostrar = new JButton("Mostrar");
-    final JPanel panel_cola = new JPanel();
+    final JPanel display_area = new JPanel();
     final JFrame frame = new JFrame(LABORATORIO);
     AbstractCola<Integer>.PanelDrawer drawer;
     AbstractCola<Integer> cola;
@@ -45,26 +44,26 @@ class ColasApp {
         frame.add(content());
         frame.setVisible(true);
         frame.pack();
+        var pref_size = frame.getPreferredSize();
+        int pref_width = Math.max(pref_size.width, 275);
+        frame.setSize(pref_width, pref_size.height);
         this.send_command(null);
     }
 
     ColasApp() {
         this.btn_crear_cola.addActionListener(e -> {
-            // TODO: Descomentar
 
-            // String input = JOptionPane.showInputDialog(frame, "Ingrese la capacidad de la
-            // cola", "Crear Cola",
-            // JOptionPane.QUESTION_MESSAGE);
-            // try {
-            // Integer.parseInt(input);
-            // } catch (NumberFormatException e1) {
-            // JOptionPane.showMessageDialog(frame, "Debe ingresar un número entero",
-            // "Error",
-            // JOptionPane.ERROR_MESSAGE);
-            // return;
-            // }
-            // int capacidad_cola = Integer.parseInt(input);
-            var capacidad_cola = 10;
+            String input = JOptionPane.showInputDialog(frame, "Ingrese la capacidad de la cola", "Crear Cola",
+                    JOptionPane.QUESTION_MESSAGE);
+            try {
+                Integer.parseInt(input);
+            } catch (NumberFormatException e1) {
+                JOptionPane.showMessageDialog(frame, "Debe ingresar un número entero",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int capacidad_cola = Integer.parseInt(input);
             this.send_command(new CrearCola(capacidad_cola));
         });
         this.btn_insertar.addActionListener(e -> {
@@ -102,7 +101,7 @@ class ColasApp {
         content.add(buttons_panel(), c);
 
         c.gridy = 1;
-        content.add(panel_cola, c);
+        content.add(display_area, c);
         return content;
     }
 
@@ -149,7 +148,6 @@ class ColasApp {
                 LABORATORIO + ": Tipo de Cola",
                 JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null,
                 new String[] { "Cola Circular", "Cola Simple" }, "Cola Circular");
-        System.out.println("Seleccion del tipo: " + num);
         return num;
     }
 
@@ -167,25 +165,34 @@ class ColasApp {
                 this.try_pack();
             }
             case Redraw() -> {
-
+                if (this.cola == null)
+                    return;
+                else if (this.drawer.cola() < this.drawer.frente() || (this.drawer.longitud() == this.drawer.capacity()
+                        && this.drawer.cola() <= this.drawer.frente()))
+                    this.drawer.wrapped();
+                else
+                    this.drawer.aligned();
                 this.try_pack();
             }
             case CrearCola(int capacidad_cola) -> {
-                // TODO: Descomentar
-                // int cola = prompt_colas_type();
-                // if (cola == COLA_CIRCULAR) {
-                // this.cola = new ColaCircular<>(capacidad_cola);
-                // } else {
-                // this.cola = new ColaSimple<>(capacidad_cola);
-                // }
-                this.cola = new ColaCircular<>(10);
+                int cola = prompt_colas_type();
+                if (this.cola != null) {
+                    this.cola.limpiar();
+                    this.drawer.aligned();
+                }
+                if (cola == COLA_CIRCULAR) {
+                    this.cola = new ColaCircular<>(capacidad_cola);
+                } else {
+                    this.cola = new ColaSimple<>(capacidad_cola);
+                }
                 String new_text = String.format("[%s (c:%d)]Recrear Cola", this.cola.getClass().getSimpleName(),
                         this.cola.capacity());
                 this.btn_crear_cola.setText(new_text);
                 switch_buttons(true);
                 this.drawer = this.cola.as_drawer();
-                this.panel_cola.removeAll();
-                this.panel_cola.add(drawer.as_panel());
+                this.display_area.removeAll();
+                this.display_area.add(drawer.as_panel());
+                drawer.aligned();
                 this.send_command(new Redraw());
                 this.try_pack();
             }
@@ -213,11 +220,34 @@ class ColasApp {
         if (this.cola == null) {
             this.btn_crear_cola.setText("Crear Cola");
             switch_buttons(false);
+        } else { // Only operations that can be done on a non-null queue
+            if (this.cola.len() <= 0) {
+                this.btn_quitar.setEnabled(false);
+                this.btn_quitar.setToolTipText("No hay elementos para quitar");
+                this.btn_limpiar.setEnabled(false);
+                this.btn_limpiar.setToolTipText("No hay elementos para limpiar");
+            } else {
+                this.btn_quitar.setEnabled(true);
+                this.btn_quitar.setToolTipText(null);
+                this.btn_limpiar.setEnabled(true);
+                this.btn_limpiar.setToolTipText(null);
+            }
+
+            if (this.cola.len() == this.cola.capacity()) {
+                this.btn_insertar.setEnabled(false);
+                this.btn_insertar.setToolTipText("La cola está llena");
+            } else {
+                this.btn_insertar.setEnabled(true);
+                this.btn_insertar.setToolTipText(null);
+            }
         }
     }
 
     public static sealed interface CMD {
         // @formatter:off
+        /**
+         * Agranda la ventana al tamaño preferido, actualizando si está subdimensionada.
+         */
         public static record Pack() implements CMD {}
         public static record CrearCola(int capacidad_cola) implements CMD {}
         public static record Insertar<T>(T elemento) implements CMD {}
