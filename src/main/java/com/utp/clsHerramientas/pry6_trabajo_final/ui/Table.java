@@ -154,7 +154,7 @@ public final class Table {
 
         var prefered = scrollPane.getPreferredSize();
         int prefered_height = Math.min(MAX_HEIGHT, prefered.height);
-        int minimum_width = (MAX_HEIGHT < prefered.height) ? prefered.width + scrollPane.getVerticalScrollBar().getWidth() : prefered.width;
+        int minimum_width = (MAX_HEIGHT < prefered.height) ? prefered.width + 17 : prefered.width;
         scrollPane.setPreferredSize(new Dimension(minimum_width, prefered_height));
         return scrollPane;
     }
