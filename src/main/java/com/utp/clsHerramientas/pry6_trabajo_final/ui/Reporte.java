@@ -118,8 +118,9 @@ public final class Reporte {
             if (antiguedad >= dias[idx_dia] && antiguedad < dias[idx_dia - 1]) {
                 resumen = resumen.add(facturas[i].monto());
             }
-            // System.out.printf("%d)Antiguedad: %d, monto: %s (%s)\n", idx_dia, antiguedad, facturas[i].monto(),
-            //         (antiguedad >= dias[idx_dia] && antiguedad < dias[idx_dia - 1]));
+            // System.out.printf("%d)Antiguedad: %d, monto: %s (%s)\n", idx_dia, antiguedad,
+            // facturas[i].monto(),
+            // (antiguedad >= dias[idx_dia] && antiguedad < dias[idx_dia - 1]));
         }
         resumen.setScale(2, RoundingMode.HALF_EVEN);
         return resumen;
@@ -206,6 +207,7 @@ public final class Reporte {
             System.out.println("OK! Exiting....");
             System.exit(0);
         });
+        UI.show(reporte.as_reporte_1());
         UI.show(reporte.as_reporte_2());
     }
 }
