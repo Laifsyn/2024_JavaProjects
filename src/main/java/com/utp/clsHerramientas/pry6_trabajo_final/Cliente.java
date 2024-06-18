@@ -16,6 +16,9 @@ public record Cliente(String codigo, String nombre, String apellido, String dire
         return clientes;
     }
 
+    public String nombre_completo(){
+        return nombre + " " + apellido;
+    }
     public static void main(String[] args) {
         Cliente[] clientes = cargar_clientes();
         for (int i = 0; i < clientes.length; i++) {

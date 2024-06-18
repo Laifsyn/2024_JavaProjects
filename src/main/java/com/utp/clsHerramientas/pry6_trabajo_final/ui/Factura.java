@@ -1,4 +1,4 @@
-package com.utp.clsHerramientas.pry6_trabajo_final;
+package com.utp.clsHerramientas.pry6_trabajo_final.ui;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -7,6 +7,8 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+
+import com.utp.clsHerramientas.pry6_trabajo_final.Datos;
 
 public record Factura(String codigo, int numero_factura, LocalDate fecha, BigDecimal monto)
         implements Comparable<Factura> {

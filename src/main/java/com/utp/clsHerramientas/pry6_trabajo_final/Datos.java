@@ -1,7 +1,7 @@
 package com.utp.clsHerramientas.pry6_trabajo_final;
 
 public class Datos {
-    static void generalesCliente(String datosGral[]) {
+    public static void generalesCliente(String datosGral[]) {
         datosGral[0] = "A280188 ANA         CORDOVA        DAVID                9603-5645 774-4563";
         datosGral[1] = "A280210 CRISTOBAL   MORALES        ALANJE               6563-9875 730-2592";
         datosGral[2] = "A280001 VICTOR      ALVAREZ        PUERTO_ARMUELLES     6897-4563 730-2564";
@@ -24,7 +24,7 @@ public class Datos {
         datosGral[19] = "A280245 JUAN        AROSEMENA      DAVID                6536-8712 774-4567";
     }
 
-    static void facturasCliente(String datosFac[]) {
+    public static void facturasCliente(String datosFac[]) {
         datosFac[0] = "A123456 0400250 06/04/2024 896.55";
         datosFac[1] = "A123456 0700175 08/07/2023 658.45";
         datosFac[2] = "A123456 0200133 09/02/2024 995.48";
