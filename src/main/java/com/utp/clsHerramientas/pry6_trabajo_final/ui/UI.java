@@ -22,8 +22,8 @@ public final class UI {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(panel);
-        frame.pack();
         frame.setVisible(true);
+        frame.pack();
         
         }
 }

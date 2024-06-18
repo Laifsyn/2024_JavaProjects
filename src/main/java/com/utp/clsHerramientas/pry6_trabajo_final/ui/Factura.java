@@ -6,6 +6,7 @@ import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 
 import com.utp.clsHerramientas.pry6_trabajo_final.Datos;
@@ -33,6 +34,9 @@ public record Factura(String codigo, int numero_factura, LocalDate fecha, BigDec
         var format = NumberFormat.getInstance();
         format.setMinimumFractionDigits(2);
         return format.format(monto);
+    }
+    public long antiguedad(){
+        return ChronoUnit.DAYS.between(LocalDate.now(), fecha);
     }
 
     public static void main(String[] args) {
