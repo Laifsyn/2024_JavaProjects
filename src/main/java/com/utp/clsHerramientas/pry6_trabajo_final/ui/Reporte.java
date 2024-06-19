@@ -1,6 +1,5 @@
 package com.utp.clsHerramientas.pry6_trabajo_final.ui;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -15,7 +14,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Locale;
 
 public final class Reporte {
@@ -24,7 +22,7 @@ public final class Reporte {
                     new Locale.Builder().setLanguage("es").setRegion("PA").build());
     final Cliente cliente;
     final Factura[] facturas;
-    public final JButton ok = new JButton("OK");
+    public final JButton ok = new JButton("Salir");
     static public final int[] dias = { 10000, 120, 90, 60, 30, 0 };
 
     public Reporte(Cliente cliente, Factura[] facturas) {

@@ -18,12 +18,14 @@ public final class UI {
         public static final Font NORMAL = new Font(Font.MONOSPACED, Font.PLAIN, 12);
     }
 
-    public static void show(JPanel panel) {
+    public static JFrame show(JPanel panel) {
         JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.add(panel);
-        frame.setVisible(true);
         frame.pack();
-        
-        }
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+
+        return frame;
+    }
 }
