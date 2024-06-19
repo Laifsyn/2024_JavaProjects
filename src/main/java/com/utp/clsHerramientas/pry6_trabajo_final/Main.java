@@ -2,6 +2,7 @@ package com.utp.clsHerramientas.pry6_trabajo_final;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -61,17 +62,19 @@ class App {
 
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.BOTH;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(5, 0, 5, 0);
+        gbc.insets = new Insets(2, 0, 2, 0);
+        panel.add(new JLabel("Ingrese el Codigo de Cliente"), gbc);
 
-        panel.add(txt_buscar, gbc);
         gbc.gridy = 1;
+        panel.add(txt_buscar, gbc);
+        gbc.gridy = 2;
         panel.add(btn_mostrar_factura, gbc);
 
         JButton btn_mostrar_clientes = new JButton("Mostrar Clientes");
-        gbc.gridy = 2;
+        gbc.gridy = 3;
         panel.add(btn_mostrar_clientes, gbc);
 
         btn_mostrar_clientes.addActionListener(e -> {
