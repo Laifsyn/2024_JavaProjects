@@ -1,0 +1,19 @@
+[package]
+name = "clsEstructuraDatos"
+version = "0.1.0"
+edition = "2021"
+
+
+[[bin]]
+name = "laboratorio_2"
+path = "laboratorio_2_rust/main.rs"
+
+
+[dependencies]
+colored = "2.1.0"
+inquire = "0.7.5"
+num-bigint = "0.4.5"
+tailcall = "1.0.1"
+
+[features]
+tailcall = []
