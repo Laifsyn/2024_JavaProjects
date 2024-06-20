@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -43,6 +44,7 @@ class App {
     public final JFrame frame = new JFrame("Trabajo Final - Arreglo de Objetos");
     final JButton btn_mostrar_factura = new JButton("Mostrar Factura");
     final JTextField txt_buscar = new JTextField(35);
+    final JLabel user_hint = new JLabel();
     boolean last_buscar_result = true;
 
     void run() {
@@ -66,7 +68,7 @@ class App {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.insets = new Insets(2, 0, 2, 0);
-        panel.add(new JLabel("Ingrese el Codigo de Cliente"), gbc);
+        panel.add(user_hint, gbc);
 
         gbc.gridy = 1;
         panel.add(txt_buscar, gbc);
@@ -123,12 +125,21 @@ class App {
                 }
                 if (cliente == null) {
                     btn_mostrar_factura.setEnabled(false);
+                    if (txt_buscar.getText().isEmpty()) {
+                        user_hint.setText("Ingrese el Codigo de Cliente");
+                        user_hint.setForeground(Color.BLACK);
+                    } else {
+                        user_hint.setText("Código no se reconoce");
+                        user_hint.setForeground(Color.RED);
+                    }
                     if (last_buscar_result) {
                         System.out.println("Cliente: `" + codigo + "` no existe");
                         last_buscar_result = false;
                     }
                     return;
                 }
+                user_hint.setText("Codigo Reconocido");
+                user_hint.setForeground(UI.DarkGreen);
                 btn_mostrar_factura.setEnabled(true);
             }
             case MostrarFactura() -> {
@@ -141,7 +152,7 @@ class App {
                 }
                 // reiniciar la búsqueda
                 txt_buscar.setText("");
-                btn_mostrar_factura.setEnabled(false);
+                send_command(new Buscar(""));
                 Reporte reporte = new Reporte(Cliente, facturas);
 
                 var reporte1 = UI.show(reporte.as_reporte_1());
@@ -149,6 +160,7 @@ class App {
                 String titulo = "Reporte de Facturas - Cliente: " + Cliente.nombre_completo();
                 reporte1.setTitle(titulo);
                 reporte2.setTitle(titulo);
+                reporte1.toFront();
                 reporte.add_ok_action(new Runnable() {
                     @Override
                     public void run() {
