@@ -113,14 +113,16 @@ class App {
         switch (cmd) {
             case Buscar(String codigo) -> {
                 Cliente cliente = null;
-                for (Cliente cliente_n : clientes) {
-                    if (cliente_n.codigo().equals(codigo)) {
-                        if (!last_buscar_result) {
-                            last_buscar_result = true;
-                            System.out.println("Cliente existe: `" + cliente_n.codigo() + "`");
+                if (!codigo.trim().isEmpty()) {
+                    for (Cliente cliente_n : clientes) {
+                        if (cliente_n.codigo().equals(codigo)) {
+                            if (!last_buscar_result) {
+                                last_buscar_result = true;
+                                System.out.println("Cliente existe: `" + cliente_n.codigo() + "`");
+                            }
+                            cliente = cliente_n;
+                            break;
                         }
-                        cliente = cliente_n;
-                        break;
                     }
                 }
                 if (cliente == null) {
