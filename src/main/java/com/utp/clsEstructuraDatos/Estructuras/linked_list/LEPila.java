@@ -1,6 +1,6 @@
-package com.utp.clsEstructuraDatos.Estructuras.pila;
+package com.utp.clsEstructuraDatos.Estructuras.linked_list;
 
-import com.utp.clsEstructuraDatos.Estructuras.linked_list.LinkedList;
+import com.utp.clsEstructuraDatos.Estructuras.pila.IStack;
 
 public class LEPila<T> implements IStack<T> {
     int len = 0;
