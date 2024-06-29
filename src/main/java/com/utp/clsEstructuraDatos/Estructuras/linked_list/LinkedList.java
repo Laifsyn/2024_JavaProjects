@@ -86,6 +86,15 @@ public class LinkedList<T> {
         return child.get().toString();
     }
 
+    public int len() {
+        return this.len;
+    }
+
+    public void clear() {
+        this.child = Optional.empty();
+        this.len = 0;
+    }
+
     public static void main(String[] args) {
         var list = new LinkedList<Integer>();
         list.insert_last(1);
