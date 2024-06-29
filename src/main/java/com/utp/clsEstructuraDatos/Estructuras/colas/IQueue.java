@@ -11,6 +11,8 @@ public interface IQueue<T> {
 
     T remove();
 
+    T peek();
+
     int len();
 
     void clear();

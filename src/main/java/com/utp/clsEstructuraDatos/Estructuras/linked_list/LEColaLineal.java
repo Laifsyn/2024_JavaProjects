@@ -21,4 +21,12 @@ public class LEColaLineal<T> extends AbstractLinkedQueue<T> {
         return inner.remove_first().get();
     }
 
+    @Override
+    public T peek() {
+        var e = inner.get(0);
+        if (e.isPresent()) {
+            return e.get();
+        }
+        return null;
+    }
 }
