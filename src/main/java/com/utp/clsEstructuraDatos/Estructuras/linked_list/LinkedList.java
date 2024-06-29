@@ -70,6 +70,21 @@ public class LinkedList<T> {
         return element;
     }
 
+    public Optional<T> get(int idx) {
+        if (idx < 0 || idx >= len) {
+            return Optional.empty();
+        }
+        Optional<Node<T>> child = this.child;
+        for (int i = 0; i < idx; i++) {
+            child = child.get().nextNode();
+        }
+        return Optional.of(child.get().value);
+    }
+
+    public Optional<T> peek_first() {
+        return get(0);
+    }
+
     public int size() {
         return len;
     }
