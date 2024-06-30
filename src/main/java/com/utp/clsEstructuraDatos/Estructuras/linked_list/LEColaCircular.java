@@ -28,4 +28,8 @@ public class LEColaCircular<T> extends AbstractLinkedQueue<T> {
         return null;
     }
 
+    public LinkedList<T> extricate() {
+        return inner;
+    }
+
 }

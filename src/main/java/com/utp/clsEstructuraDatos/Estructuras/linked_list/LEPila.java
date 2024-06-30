@@ -57,4 +57,7 @@ public class LEPila<T> implements IStack<T> {
         return false;
     }
 
+    public LinkedList<T> extricate() {
+        return inner;
+    }
 }

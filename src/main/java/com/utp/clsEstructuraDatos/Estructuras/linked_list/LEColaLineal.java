@@ -29,4 +29,8 @@ public class LEColaLineal<T> extends AbstractLinkedQueue<T> {
         }
         return null;
     }
+
+    public LinkedList<T> extricate() {
+        return inner;
+    }
 }
