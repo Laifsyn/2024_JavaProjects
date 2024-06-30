@@ -1,8 +1,8 @@
-package com.utp.clsHerramientas.pry6_trabajo_final;
+package com.utp.clsHerramientas.semestral;
 
 import java.util.ArrayList;
 
-import com.utp.clsHerramientas.pry6_trabajo_final.ui.Factura;
+import com.utp.clsHerramientas.semestral.ui.Factura;
 
 public final class Querier {
     public static Factura[] selectFacturas(Cliente cliente, Factura[] facturas) {

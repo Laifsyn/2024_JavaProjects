@@ -1,4 +1,4 @@
-package com.utp.clsHerramientas.pry6_trabajo_final;
+package com.utp.clsHerramientas.semestral;
 
 public record Cliente(String codigo, String nombre, String apellido, String direccion, String telefono_1,
         String telefono_2) {

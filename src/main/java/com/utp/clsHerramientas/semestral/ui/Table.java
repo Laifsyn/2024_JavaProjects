@@ -1,4 +1,4 @@
-package com.utp.clsHerramientas.pry6_trabajo_final.ui;
+package com.utp.clsHerramientas.semestral.ui;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-import com.utp.clsHerramientas.pry6_trabajo_final.Cliente;
+import com.utp.clsHerramientas.semestral.Cliente;
 
 public final class Table {
     static final Integer MAX_HEIGHT = 300;

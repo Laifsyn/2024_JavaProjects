@@ -1,4 +1,4 @@
-package com.utp.clsHerramientas.pry6_trabajo_final;
+package com.utp.clsHerramientas.semestral;
 
 public class Datos {
     public static void generalesCliente(String datosGral[]) {

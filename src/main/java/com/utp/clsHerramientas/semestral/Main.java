@@ -1,4 +1,4 @@
-package com.utp.clsHerramientas.pry6_trabajo_final;
+package com.utp.clsHerramientas.semestral;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -14,11 +14,11 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.KeyEvent;
 
-import com.utp.clsHerramientas.pry6_trabajo_final.ui.Factura;
-import com.utp.clsHerramientas.pry6_trabajo_final.ui.Reporte;
-import com.utp.clsHerramientas.pry6_trabajo_final.ui.UI;
+import com.utp.clsHerramientas.semestral.ui.Factura;
+import com.utp.clsHerramientas.semestral.ui.Reporte;
+import com.utp.clsHerramientas.semestral.ui.UI;
 
-import static com.utp.clsHerramientas.pry6_trabajo_final.App.CMD.*;
+import static com.utp.clsHerramientas.semestral.App.CMD.*;
 
 public class Main {
     public static void main(String[] args) {

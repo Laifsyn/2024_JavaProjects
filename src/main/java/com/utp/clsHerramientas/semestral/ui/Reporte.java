@@ -1,11 +1,11 @@
-package com.utp.clsHerramientas.pry6_trabajo_final.ui;
+package com.utp.clsHerramientas.semestral.ui;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import com.utp.clsHerramientas.pry6_trabajo_final.Cliente;
-import com.utp.clsHerramientas.pry6_trabajo_final.Querier;
+import com.utp.clsHerramientas.semestral.Cliente;
+import com.utp.clsHerramientas.semestral.Querier;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;

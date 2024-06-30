@@ -1,4 +1,4 @@
-package com.utp.clsHerramientas.pry6_trabajo_final.ui;
+package com.utp.clsHerramientas.semestral.ui;
 
 import java.awt.Color;
 import java.awt.Font;
