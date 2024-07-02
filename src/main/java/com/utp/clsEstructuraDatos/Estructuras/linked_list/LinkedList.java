@@ -89,7 +89,7 @@ public class LinkedList<T> {
         return len;
     }
 
-    boolean isEmpty() {
+    public boolean isEmpty() {
         return (len == 0);
     }
 

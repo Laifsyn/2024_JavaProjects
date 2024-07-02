@@ -57,7 +57,11 @@ public class LEPila<T> implements IStack<T> {
         return false;
     }
 
-    public LinkedList<T> extricate() {
+    public LinkedList<T> to_inverted() {
+        var inner = new LinkedList<T>();
+        for (int i = len - 1; i >= 0; i--) {
+            inner.insert_first(this.inner.get(i).get());
+        }
         return inner;
     }
 }
