@@ -1,5 +1,6 @@
 package com.utp.clsEstructuraDatos.laboratorio_4;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -35,6 +36,9 @@ class App {
     JButton btn_create = new JButton("Create");
     JButton btn_display = new JButton("Display");
 
+    public static final Color Red = Color.RED;
+    public static final Color Green = Color.GREEN;
+    public static final Color Black = Color.BLACK;
     public static final String UNDEFINED_COLLECTION = "Colección no definida";
 
     App() {
@@ -47,7 +51,23 @@ class App {
         btn_pop.setEnabled(false);
         btn_peek.setEnabled(false);
         btn_clear.setEnabled(false);
-        btn_display.addActionListener(e -> SendEvent(new Display("")));
+        btn_display.addActionListener(e -> SendEvent(new Display("", Black)));
+        btn_pop.addActionListener(e -> SendEvent(new Pop()));
+        btn_peek.addActionListener(e -> SendEvent(new Peek()));
+        btn_clear.addActionListener(e -> SendEvent(new Clear()));
+        btn_create.addActionListener(e -> SendEvent(new Create()));
+        btn_push.addActionListener(e -> {
+            String input = JOptionPane.showInputDialog("Ingrese un número entero");
+            if (input == null) {
+                return;
+            }
+            try {
+                int element = Integer.parseInt(input);
+                SendEvent(new Push(element));
+            } catch (NumberFormatException ex) {
+                error_dialogue("Por favor ingrese un número entero.");
+            }
+        });
     }
 
     void new_collection() {
@@ -91,7 +111,7 @@ class App {
         switch (event) {
             case Push(int element) -> {
                 collection.insert(element);
-                SendEvent(new Display("Elemento insertado: " + element));
+                SendEvent(new Display("Elemento insertado: " + element, Green));
             }
             case Pop() -> {
                 if (collection.isEmpty()) {
@@ -100,20 +120,21 @@ class App {
                 }
                 Optional<Integer> popped = collection.pop();
                 String popped_string = popped.get().toString();
-                SendEvent(new Display("Elemento quitado: " + popped_string));
+                SendEvent(new Display("Elemento quitado: " + popped_string, Black));
             }
             case Peek() -> {
                 if (collection.isEmpty()) {
+                    SendEvent(new Display("Collecion vacía", Red));
                     error_dialogue("No se puede ver el elemento de una colección vacía.");
                     return;
                 }
                 var elemento = collection.peek();
                 String elemento_string = elemento.get().toString();
-                SendEvent(new Display("Viendo Elemento: " + elemento_string));
+                SendEvent(new Display("Viendo Elemento: " + elemento_string, Black));
             }
             case Clear() -> {
                 collection.clear();
-                SendEvent(new Display("Colección limpiada"));
+                SendEvent(new Display("Colección limpiada", Black));
             }
             case Create() -> {
                 new_collection();
@@ -123,21 +144,22 @@ class App {
                 } else {
                     String collection_type = collection.getClass().getSimpleName();
                     this.collection_type.setText("Tipo de collección: " + collection_type);
-                    SendEvent(new Display(String.format("Colección `%s` creada", collection_type)));
+                    SendEvent(new Display(String.format("Colección `%s` creada", collection_type), Green));
                 }
             }
             case ExtendFrom(AppCollection<Integer> source) -> {
                 collection.extend_from(source);
                 throw new UnsupportedOperationException("Not implemented");
             }
-            case Display(String msg) -> {
+            case Display(String msg, Color clr) -> {
                 btn_display.setText(msg);
+                btn_display.setForeground(clr);
             }
         }
     }
 
     void run() {
-        frame.add(button_pane());
+        frame.add(content_pane());
         frame.pack();
         frame.setVisible(true);
     }
@@ -195,7 +217,7 @@ class App {
         public static record Peek() implements AppEvent {}
         public static record Clear() implements AppEvent {}
         public static record Create() implements AppEvent {}
-        public static record Display(String msg) implements AppEvent {}
+        public static record Display(String msg, Color color) implements AppEvent {}
         public static record ExtendFrom(AppCollection<Integer> source) implements AppEvent {}
         // @formatter:on
     }
