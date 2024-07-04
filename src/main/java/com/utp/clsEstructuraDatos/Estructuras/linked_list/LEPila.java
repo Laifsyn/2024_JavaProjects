@@ -41,6 +41,7 @@ public class LEPila<T> implements IStack<T> {
 
     @Override
     public void clear() {
+        len = 0;
         inner.clear();
     }
 
@@ -63,5 +64,17 @@ public class LEPila<T> implements IStack<T> {
             inner.insert_first(this.inner.get(i).get());
         }
         return inner;
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        for (int i = 0; i < len; i++) {
+            sb.append(inner.get(i).get().toString());
+            sb.append("| ");
+        }
+        sb.delete(sb.length() - 2, sb.length());
+        sb.append("]");
+        return sb.toString();
     }
 }

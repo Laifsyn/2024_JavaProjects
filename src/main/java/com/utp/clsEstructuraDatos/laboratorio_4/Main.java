@@ -1,6 +1,7 @@
 package com.utp.clsEstructuraDatos.laboratorio_4;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -11,6 +12,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
 import com.utp.clsEstructuraDatos.Estructuras.linked_list.LEColaCircular;
 import com.utp.clsEstructuraDatos.Estructuras.linked_list.LEColaLineal;
@@ -20,7 +22,10 @@ import com.utp.clsEstructuraDatos.Estructuras.linked_list.LinkedList;
 import static com.utp.clsEstructuraDatos.laboratorio_4.App.AppEvent.*;
 
 public class Main {
-
+    public static void main(String[] args) {
+        App app = new App();
+        app.run();
+    }
 }
 
 class App {
@@ -28,7 +33,7 @@ class App {
     AppCollection<Integer> collection = null;
     JFrame frame = new JFrame(LABORATORIO);
     JLabel collection_type = new JLabel(App.UNDEFINED_COLLECTION);
-    JLabel message_label = new JLabel("");
+    JTextArea message_label = new JTextArea("");
     JButton btn_push = new JButton("Push");
     JButton btn_pop = new JButton("Pop");
     JButton btn_peek = new JButton("Peek");
@@ -37,7 +42,7 @@ class App {
     JButton btn_display = new JButton("Display");
 
     public static final Color Red = Color.RED;
-    public static final Color Green = Color.GREEN;
+    public static final Color Green = new Color(1, 113, 72);
     public static final Color Black = Color.BLACK;
     public static final String UNDEFINED_COLLECTION = "Colección no definida";
 
@@ -51,11 +56,12 @@ class App {
         btn_pop.setEnabled(false);
         btn_peek.setEnabled(false);
         btn_clear.setEnabled(false);
-        btn_display.addActionListener(e -> SendEvent(new Display("", Black)));
+        btn_display.addActionListener(e -> SendEvent(new Display()));
         btn_pop.addActionListener(e -> SendEvent(new Pop()));
         btn_peek.addActionListener(e -> SendEvent(new Peek()));
         btn_clear.addActionListener(e -> SendEvent(new Clear()));
         btn_create.addActionListener(e -> SendEvent(new Create()));
+        message_label.setEditable(false);
         btn_push.addActionListener(e -> {
             String input = JOptionPane.showInputDialog("Ingrese un número entero");
             if (input == null) {
@@ -111,30 +117,35 @@ class App {
         switch (event) {
             case Push(int element) -> {
                 collection.insert(element);
-                SendEvent(new Display("Elemento insertado: " + element, Green));
+                SendEvent(new UpdateMsg("Elemento insertado: " + element, Green));
             }
             case Pop() -> {
                 if (collection.isEmpty()) {
+                    SendEvent(new UpdateMsg("Collecion vacía", Red));
                     error_dialogue("No se puede quitar de una colección vacía.");
                     return;
                 }
                 Optional<Integer> popped = collection.pop();
                 String popped_string = popped.get().toString();
-                SendEvent(new Display("Elemento quitado: " + popped_string, Black));
+                SendEvent(new UpdateMsg("Elemento quitado: " + popped_string, Black));
             }
             case Peek() -> {
                 if (collection.isEmpty()) {
-                    SendEvent(new Display("Collecion vacía", Red));
+                    SendEvent(new UpdateMsg("Colección vacía", Red));
                     error_dialogue("No se puede ver el elemento de una colección vacía.");
                     return;
                 }
                 var elemento = collection.peek();
                 String elemento_string = elemento.get().toString();
-                SendEvent(new Display("Viendo Elemento: " + elemento_string, Black));
+                SendEvent(new UpdateMsg("Viendo Elemento: " + elemento_string, Black));
             }
             case Clear() -> {
+                if (collection.isEmpty()) {
+                    SendEvent(new UpdateMsg("La colección ya está vacía", Black));
+                    return;
+                }
                 collection.clear();
-                SendEvent(new Display("Colección limpiada", Black));
+                SendEvent(new UpdateMsg("Colección limpiada", Black));
             }
             case Create() -> {
                 new_collection();
@@ -144,16 +155,35 @@ class App {
                 } else {
                     String collection_type = collection.getClass().getSimpleName();
                     this.collection_type.setText("Tipo de collección: " + collection_type);
-                    SendEvent(new Display(String.format("Colección `%s` creada", collection_type), Green));
+                    btn_display.setEnabled(true);
+                    btn_push.setEnabled(true);
+                    btn_pop.setEnabled(true);
+                    btn_peek.setEnabled(true);
+                    btn_clear.setEnabled(true);
+                    SendEvent(new UpdateMsg(String.format("Colección `%s` creada", collection_type), Green));
                 }
             }
             case ExtendFrom(AppCollection<Integer> source) -> {
                 collection.extend_from(source);
                 throw new UnsupportedOperationException("Not implemented");
             }
-            case Display(String msg, Color clr) -> {
-                btn_display.setText(msg);
-                btn_display.setForeground(clr);
+            case Display() -> {
+                if (collection.isEmpty()) {
+                    SendEvent(new UpdateMsg("Colección vacía", Red));
+                    return;
+                }
+                StringBuilder sb = new StringBuilder();
+                sb.append("Elementos en la colección: ");
+                sb.append(collection.len());
+                sb.append("\n");
+                sb.append("Elementos: ");
+                sb.append(collection);
+                SendEvent(new UpdateMsg(sb.toString(), Black));
+            }
+            case UpdateMsg(String msg, Color clr) -> {
+                message_label.setText(msg);
+                message_label.setForeground(clr);
+                try_pack();
             }
         }
     }
@@ -161,6 +191,10 @@ class App {
     void run() {
         frame.add(content_pane());
         frame.pack();
+        frame.setLocationRelativeTo(null);
+        var prefered = frame.getPreferredSize();
+        prefered.width = 280;
+        frame.setSize(prefered);
         frame.setVisible(true);
     }
 
@@ -200,6 +234,7 @@ class App {
         panel.add(btn_clear, gbc);
         gbc.gridy = 3;
         gbc.gridx = 0;
+        gbc.gridwidth = 2;
         panel.add(btn_display, gbc);
 
         return panel;
@@ -210,6 +245,16 @@ class App {
         JOptionPane.showMessageDialog(null, msg, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    // Packs the frame to the preferred size, updating if undersized
+    public void try_pack() {
+        Dimension current_size = frame.getSize();
+        Dimension preferred_size = frame.getPreferredSize();
+        int new_width = Math.max(current_size.width, preferred_size.width);
+        int new_height = Math.max(current_size.height, preferred_size.height);
+        if (new_width != current_size.width || new_height != current_size.height)
+            frame.setSize(new_width, new_height);
+    }
+
     public sealed static interface AppEvent {
         // @formatter:off
         public static record Push(int element) implements AppEvent {}
@@ -217,7 +262,8 @@ class App {
         public static record Peek() implements AppEvent {}
         public static record Clear() implements AppEvent {}
         public static record Create() implements AppEvent {}
-        public static record Display(String msg, Color color) implements AppEvent {}
+        public static record Display() implements AppEvent {}
+        public static record UpdateMsg(String msg, Color color) implements AppEvent {}
         public static record ExtendFrom(AppCollection<Integer> source) implements AppEvent {}
         // @formatter:on
     }
@@ -234,12 +280,19 @@ sealed interface AppCollection<T> {
     int len();
     // @formatter:on
 
-    default AppCollection<T> extend_from(AppCollection<T> source) {
+    public default AppCollection<T> extend_from(AppCollection<T> source) {
         switch (source) {
             case Stack<T>(var stack) -> {
-                LinkedList<T> list = stack.to_inverted();
-                while (!list.isEmpty()) {
-                    this.insert(list.remove_first().get());
+
+                if (this instanceof Stack<T>) {
+                    LinkedList<T> source_list = stack.to_inverted();
+                    while (!source_list.isEmpty()) {
+                        this.insert(source_list.remove_first().get());
+                    }
+                } else {
+                    while (!stack.isEmpty()) {
+                        this.insert(stack.pop());
+                    }
                 }
             }
             case Queue<T>(LEColaLineal<T> queue) -> {

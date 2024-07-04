@@ -21,7 +21,7 @@ public class LEColaLineal<T> extends AbstractLinkedQueue<T> {
         if (this.isEmpty()) {
             return null;
         }
-        if (inner.len() == 0) {
+        if (inner.len() == 1) {
             len = 0;
         }
         return inner.remove_first().get();
@@ -39,4 +39,5 @@ public class LEColaLineal<T> extends AbstractLinkedQueue<T> {
     public LinkedList<T> extricate() {
         return inner;
     }
+
 }

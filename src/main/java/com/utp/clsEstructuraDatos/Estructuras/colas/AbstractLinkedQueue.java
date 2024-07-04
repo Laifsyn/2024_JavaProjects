@@ -3,7 +3,7 @@ package com.utp.clsEstructuraDatos.Estructuras.colas;
 import com.utp.clsEstructuraDatos.Estructuras.linked_list.LinkedList;
 
 public abstract class AbstractLinkedQueue<T> implements IQueue<T> {
-    protected LinkedList<T> inner;
+    protected LinkedList<T> inner = new LinkedList<>();
     protected int len = 0;
 
     @Override
@@ -25,4 +25,15 @@ public abstract class AbstractLinkedQueue<T> implements IQueue<T> {
         this.len = 0;
     }
 
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        for (int i = 0; i < inner.len(); i++) {
+            sb.append(inner.get(i).get().toString());
+            sb.append(", ");
+        }
+        sb.delete(sb.length() - 2, sb.length());
+        sb.append("]");
+        return sb.toString();
+    }
 }
