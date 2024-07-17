@@ -4,13 +4,14 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import com.utp.clsEstructuraDatos.Estructuras.pila.Pila;
+
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.TextArea;
 import java.util.ArrayList;
 
-import com.utp.clsEstructuraDatos.Estructuras.Pila;
 public class Main {
     public static void main(String[] args) {
         App app = new App();
@@ -32,7 +33,7 @@ class App {
         frame.setLayout(new GridBagLayout());
         add_button_commands(frame);
         GridBagConstraints c = new GridBagConstraints();
-        
+
         // Representación en vivo de la Pila
         c.gridy = 2;
         c.gridwidth = 8;
